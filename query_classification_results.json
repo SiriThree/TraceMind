@@ -1,0 +1,2802 @@
+[
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 1,
+        "query": "请问你们家的商品支持7天无理由退换货吗？\",\n\"需要自己承担运费吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 2,
+        "query": "我想咨询一下，你们的售后维修服务范围是什么？\",\n\"如果是人为损坏的，能维修吗？维修费用怎么算？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 3,
+        "query": "请问你们的商品能开发票吗？发票类型是什么？\",\n\"多久能收到呢？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 4,
+        "query": "我收到商品后，发现包装破损了，怎么办？\",\n\"影响商品退换货吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 6,
+        "query": "我想了解一下你们的退款政策，退款多久能到账？\",\n\"信用卡会原路返回吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 7,
+        "query": "我收到的商品和图片不一样，颜色偏差很大，我要投诉！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 8,
+        "query": "你们的商品存在虚假宣传，宣传的功能和实际不一样，我要投诉！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 9,
+        "query": "我收到的商品少了一件，联系客服说会补发，但是过了一周还没补发！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 10,
+        "query": "你们的售后维修服务太差了，我送修的商品，过了半个月还没修好！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 11,
+        "query": "你们的商品保质期有问题，我收到的商品还有1个月就过期了！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 12,
+        "query": "你们的快递员态度特别差，送货时还辱骂我，我要投诉！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 13,
+        "query": "你们的商品存在质量问题，我使用了一次就坏了，联系客服没人管！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 14,
+        "query": "我收到的商品被拆封过，里面还有污渍，明显是二手商品，我要投诉！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 15,
+        "query": "你们的商品宣传是正品，但是我收到后验证是假货，我要投诉！"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 16,
+        "query": "我收到商品后，发现商品有轻微划痕，不影响使用，能申请换货吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 17,
+        "query": "我想换货，但是原来的商品包装盒丢了，还能换吗？\",\n\"需要我额外支付包装费吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 18,
+        "query": "我想退货，但是已经超过7天无理由退换货期限了，还能退吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 19,
+        "query": "请问你们的商品能提供纸质版说明书吗？\",\n\"电子版在哪里可以找到？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 20,
+        "query": "请问你们家的商品能寄到国外吗？\",\n\"运费怎么算？大概需要多久能到？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 21,
+        "query": "我购买的商品，想开发票抬头为公司，需要注意什么？\",\n\"抬头写错了，能重新开具吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 22,
+        "query": "我收到商品后，发现商品有瑕疵，但是已经使用过了，能售后吗？\",\n\"换货还是只能维修？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 23,
+        "query": "我想取消订单，但是订单已经付款了，能全额退款吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 24,
+        "query": "请问你们的商品有售后保障卡吗？\",\n\"卡丢了，还能享受售后服务吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 25,
+        "query": "请问你们家支持以旧换新服务吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 26,
+        "query": "请问你们的智能客服能解答哪些问题？\",\n\"智能客服解答不了的问题，怎么办？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 33,
+        "query": "家支持7天无理由退货吗？\",\n\"需要满足什么条件？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 34,
+        "query": "我购买的商品，收到后发现少发了一件，怎么办？\",\n\"什么时候能补寄？需要我承担运费吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 35,
+        "query": "想换成其他款式，能换货吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 36,
+        "query": "请问商品的生产日期是什么时候？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 37,
+        "query": "请问你们的商品能提供上门安装服务吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 38,
+        "query": "请问你们的商品能提供试用装吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 39,
+        "query": "我购买的商品，使用一段时间后出现质量问题，还能售后吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 40,
+        "query": "我想给商品更换成更大的尺寸，能换吗？\",\n\"尺寸差价怎么处理？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 41,
+        "query": "快递丢失了，怎么办？\"，\n\"这种情况你们会怎么赔偿？多久能解决？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 42,
+        "query": "我购买的商品，想申请退款，但是已经使用过了，能退吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 43,
+        "query": "我购买的商品，快递送达时，我不在家，怎么办？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 44,
+        "query": "请问你们的优惠券能用于所有商品吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 45,
+        "query": "请问你们的商品能提供终身维修服务吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 46,
+        "query": "我上个月购买的家电，使用不到一个月就出现故障，联系售后寄回维修，现在已经维修15天了，还没收到，而且我发现商品是翻新机，并非全新，要求退货退款并赔偿，请问该怎么处理？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 47,
+        "query": "我在你们平台批量购买了100件商品用于企业采购，收到货后发现有20件存在质量问题，15件少发，而且发票开错了抬头，需要重新开具，同时想申请质量问题商品的换货和少发商品的补寄，请问流程是什么？\","
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 48,
+        "query": "我购买的食品类商品，收到后发现生产日期临近过期，而且包装破损，部分商品受潮无法食用，我要求退货退款并赔偿，同时担心食用了受潮商品影响健康，请问能提供相关保障吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 49,
+        "query": "我购买的商品包装破损，商品出现损坏，而且快递员拒绝承认是运输问题，同时我已经签收商品，请问还能申请售后吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 50,
+        "query": "我购买的大家电需要上门安装，但是安装人员上门后说需要额外收取配件费，而且安装服务原本应该是免费的，同时安装人员操作不规范，导致家电出现轻微损坏，请问该怎么处理？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 51,
+        "query": "我购买的商品在质保期内出现质量问题，寄回维修后，维修人员说需要更换配件，而且要收取配件费，但是质保期内应该免费维修，同时维修时间已经超过承诺的7天，请问该怎么处理？\","
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 52,
+        "query": "我购买的大型设备需要上门检修，但是检修人员上门后说设备故障无法现场修复，需要拉回仓库维修，而且维修时间不确定，同时我担心设备拉回过程中出现损坏，请问该怎么处理？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 53,
+        "query": "我想试用商品，但是试用期间商品出现故障，而且不是人为操作导致的，同时我想延长试用期限，请问可以吗？另外故障商品能更换吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 54,
+        "query": "我购买的商品，收到后发现是临期商品（还有15天过期），但下单时页面未标注临期，而且商品包装上也没有临期提示，我要求退货退款并赔偿，请问可以吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 55,
+        "query": "我购买的商品，收到后发现商品的颜色和详情页描述的不一致，详情页是深红色，实际收到的是浅红色，而且商品有轻微的异味，想申请换货"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 57,
+        "query": "我购买的商品，快递寄到后，我拆开包装发现商品损坏，但是快递员已经离开，没有当场验货，请问还能申请售后吗？"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "chinese",
+        "id": 58,
+        "query": "我购买的商品，使用时发现商品的功能和详情页描述的不一致，详情页说支持无线充电，实际不支持，而且商品的续航时间也比描述的短很多，要求退货退款并赔偿，请问可以吗？\","
+    },
+    {
+        "source": "吹风机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 64,
+        "query": "使用吹风机时，人员需要佩戴哪些防护装备？"
+    },
+    {
+        "source": "吹风机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 65,
+        "query": "操作吹风机时，人员需要注意哪些安全要点？"
+    },
+    {
+        "source": "吹风机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 66,
+        "query": "使用吹风机时，如何调节化油器？"
+    },
+    {
+        "source": "吹风机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 67,
+        "query": "吹风机冷机时，该如何启动？"
+    },
+    {
+        "source": "吹风机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 68,
+        "query": "吹风机热机时，该如何启动？"
+    },
+    {
+        "source": "吹风机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 69,
+        "query": "该如何关闭吹风机？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 70,
+        "query": "空调的重要组成部件有哪些？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 71,
+        "query": "如何找到空调遥控器的按键？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 72,
+        "query": "如何给空调遥控器安装电池？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 73,
+        "query": "如何安装空调遥控器支架？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 74,
+        "query": "如何用空调快速调节室内温度？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 75,
+        "query": "如何使用空调的自清洁运行功能？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 76,
+        "query": "如何使用空调的等离子净化功能？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 77,
+        "query": "单冷型空调如何开启自动运行模式？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 78,
+        "query": "如何使用空调的自动转换运行功能？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 79,
+        "query": "如何开启空调的节能制冷模式？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 80,
+        "query": "无遥控器时如何操作空调？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 81,
+        "query": "如何让空调实现自动重启？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 82,
+        "query": "不同型号空调的清洁频率是多少？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 83,
+        "query": "如何清洁空调的空气滤网？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 84,
+        "query": "如何清洁空调的3M多重防护滤网？"
+    },
+    {
+        "source": "空调手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 85,
+        "query": "如何清洁空调的等离子滤网？"
+    },
+    {
+        "source": "蒸汽清洁机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 86,
+        "query": "如何快速组装蒸汽清洁机？"
+    },
+    {
+        "source": "蒸汽清洁机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 87,
+        "query": "蒸汽清洁机有哪些实用的产品功能？如何快速上手使用？"
+    },
+    {
+        "source": "蒸汽清洁机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 88,
+        "query": "如何使用蒸汽清洁机清洁硬质地面？"
+    },
+    {
+        "source": "人体工学椅手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 89,
+        "query": "组装人体工学椅涉及哪些部件？"
+    },
+    {
+        "source": "人体工学椅手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 90,
+        "query": "椅子的扶手使用一段时间后为什么会松动？"
+    },
+    {
+        "source": "人体工学椅手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 91,
+        "query": "这款椅子有哪些功能？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 92,
+        "query": "洗碗机的部件有哪些？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 93,
+        "query": "首次使用时，如何将洗碗机连接到排水口？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 94,
+        "query": "使用前如何为洗碗机添加专用盐？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 95,
+        "query": "如何为洗碗机添加洗涤剂？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 96,
+        "query": "如何为洗碗机添加洗涤块？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 97,
+        "query": "如何在洗碗机中添加和使用亮碟剂以获得更好的洗涤效果？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 98,
+        "query": "哪些物品不适合在洗碗机中清洗？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 99,
+        "query": "如何根据洗碗机型号安装餐具篮？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 100,
+        "query": "使用洗碗机前如何安装可折叠下层篮架？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 101,
+        "query": "如何调节洗碗机满载时上下碗篮的高度？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 102,
+        "query": "如何清洁洗碗机的进水管滤网？"
+    },
+    {
+        "source": "洗碗机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 103,
+        "query": "如何清洁洗碗机的上层喷淋臂？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 104,
+        "query": "如何拆除空气净化器滤网的塑料包装？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 105,
+        "query": "如何安装空气净化器的脚轮？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 106,
+        "query": "空气净化器通常有哪些模式？如何设置？这些模式有什么特点？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 107,
+        "query": "空气净化器的室内空气质量指示灯是什么？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 108,
+        "query": "如何清洁空气净化器的设备内外？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 109,
+        "query": "如何清洁空气净化器的滤网？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 110,
+        "query": "如何更换空气净化器的滤网？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 111,
+        "query": "如何清洁空气净化器的灰尘传感器？"
+    },
+    {
+        "source": "空气净化器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 112,
+        "query": "空气净化器需要长期存放时该怎么做？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 113,
+        "query": "如何了解这款健身单车的技术规格？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 114,
+        "query": "启动健身单车前，我需要做什么？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 115,
+        "query": "我听说买的这款健身单车配有控制台和显示功能，能为我介绍一下吗？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 116,
+        "query": "在健身单车上运动前，我需要调整什么来保证运动的舒适度？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 117,
+        "query": "使用健身单车的轻松骑行类别时，我能体验到哪些预设运动程序？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 118,
+        "query": "使用健身单车的山地类别时，我能体验到哪些预设运动程序？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 119,
+        "query": "挑战健身单车的最高难度类别时，我能体验到哪些预设运动程序？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 120,
+        "query": "如果我想编辑健身单车的用户档案，需要遵循哪些步骤？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 121,
+        "query": "我想在使用健身单车时设置心率目标，能否根据我的年龄为我推荐合适的目标心率？"
+    },
+    {
+        "source": "健身单车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 122,
+        "query": "我听说这款健身单车有体能测试程序，这是什么功能？"
+    },
+    {
+        "source": "电钻手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 123,
+        "query": "如果要给电钻充电，需要遵循哪些步骤？"
+    },
+    {
+        "source": "电钻手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 124,
+        "query": "我的DCB101型号电钻指示灯闪烁时，这些闪烁标识代表什么含义？"
+    },
+    {
+        "source": "电钻手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 126,
+        "query": "使用电钻时，如何安装单套无键夹头？"
+    },
+    {
+        "source": "电钻手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 127,
+        "query": "如果要安装和拆卸电钻的电池组，需要遵循什么步骤？"
+    },
+    {
+        "source": "电钻手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 128,
+        "query": "使用电钻的腰带挂钩和批头夹时，需要特别注意什么？"
+    },
+    {
+        "source": "电钻手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 129,
+        "query": "购买电钻后，应配备哪些附件？"
+    },
+    {
+        "source": "电钻手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 130,
+        "query": "电钻的三年有限保修包含哪些内容？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 131,
+        "query": "购买健身追踪器后，包装盒里应该有什么？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 132,
+        "query": "我刚发现健身追踪器电量低，该如何正确为其充电？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 133,
+        "query": "为了让健身追踪器性能更佳，日常佩戴和运动时该将其佩戴在什么位置？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 134,
+        "query": "我的健身追踪器表带太紧了，该如何扣紧表带？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 135,
+        "query": "我想取下健身追踪器，该如何正确拆卸表带？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 136,
+        "query": "我听说可以操作健身追踪器的界面，具体该遵循哪些步骤？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 137,
+        "query": "健身追踪器能对手机的通知实现哪些功能？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 138,
+        "query": "能告诉我健身追踪器是如何追踪皮肤温度变化的吗？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 139,
+        "query": "通过运动应用，健身追踪器是如何追踪并分析我的运动情况的？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 140,
+        "query": "健身追踪器是如何测量我的心率的？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 141,
+        "query": "我该如何仅使用健身追踪器完成消费支付？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 142,
+        "query": "使用健身追踪器时，我可能会遇到哪些问题以及该如何解决？"
+    },
+    {
+        "source": "健身追踪器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 144,
+        "query": "我想给健身追踪器设置锁屏，该如何实现？"
+    },
+    {
+        "source": "冰箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 145,
+        "query": "使用冰箱冰柜时需要注意什么？只需告诉我手册中的前五条。"
+    },
+    {
+        "source": "冰箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 146,
+        "query": "给冰箱连接电源时，需要做到哪些注意事项？只需告诉我手册中的前五条。"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 153,
+        "query": "考虑到燃油高度易燃且有毒，使用发电机时我需要注意什么？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 154,
+        "query": "发电机工作后，发动机和消音器可能会发烫，这种情况下我该如何保证自身安全？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 155,
+        "query": "日常使用中，如何防止发电机触电事故的发生？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 156,
+        "query": "需要通过发电机的燃油开关旋钮供油时，我该遵循哪些步骤？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 157,
+        "query": "使用发电机时，燃油的使用前检查十分重要，该如何操作？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 158,
+        "query": "启动发电机发动机的前两个步骤是什么？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 159,
+        "query": "我需要给发电机连接交流电，该过程中如何保证自身安全？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 160,
+        "query": "我注意到发电机上有两种不同的开关，请为我介绍一下。"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 161,
+        "query": "我该在哪里查找并记录发电机的标识信息？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 162,
+        "query": "使用发电机的直流保护器时，我需要注意什么？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 163,
+        "query": "使用发电机前，对发动机机油进行使用前检查十分重要，正确的步骤是什么？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 164,
+        "query": "根据手册说明，启动发电机发动机的最后三个步骤是什么？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 165,
+        "query": "发电机的电池电量不足了，该如何正确充电？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 166,
+        "query": "我需要让发电机的发动机停机，告诉我该如何操作。"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 167,
+        "query": "根据手册的建议，使用发电机时该如何检查火花塞？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 168,
+        "query": "为了正确更换发电机的发动机机油，我需要遵循的前六个步骤是什么？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 169,
+        "query": "我在操作发电机空气滤清器时出现了失误，请告诉我正确的步骤。"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 170,
+        "query": "如果发电机的发动机无法启动，我该怎么办？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 171,
+        "query": "我需要将发电机的燃油排空，该如何正确操作？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 172,
+        "query": "使用该发电机为对电压敏感的精密设备供电前，我需要做什么？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 173,
+        "query": "在划船或钓鱼的场景中，拖曳速度、半滑航速度和滑航速度分别指什么，它们在技巧和应用上有何不同？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 174,
+        "query": "如何在深水中登上并平衡摩托艇，确保操作的安全性和稳定性？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 175,
+        "query": "在滑航速度下驾驶摩托艇转弯时，有哪些技巧能在急转弯时保证稳定性和操控性？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 176,
+        "query": "驾驶摩托艇时，有哪些技巧能在完成大椭圆转弯、绕圈和8字行驶动作的同时，保持操控性和稳定性？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 177,
+        "query": "在驾驶摩托艇进行中低速转弯时，如何控制油门并保持行驶的稳定性和操控性？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 178,
+        "query": "如何驾驶摩托艇以拖曳速度直行和转弯，保证操作的平顺性和操控性？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 179,
+        "query": "摩托艇全加速行驶时，如何安全平稳地将其停稳？"
+    },
+    {
+        "source": "摩托艇手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 180,
+        "query": "驾驶摩托艇时，如何避免发生碰撞事故，保障自身和水上其他人员的安全？"
+    },
+    {
+        "source": "水泵手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 181,
+        "query": "水泵发动机安全停机的正确步骤是什么？"
+    },
+    {
+        "source": "水泵手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 182,
+        "query": "水泵的核心部件有哪些？"
+    },
+    {
+        "source": "发电机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 183,
+        "query": "清洗油箱滤网的详细步骤是什么？"
+    },
+    {
+        "source": "水泵手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 184,
+        "query": "水泵安全排放燃油的正确步骤是什么？"
+    },
+    {
+        "source": "水泵手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 185,
+        "query": "水泵无法抽水的潜在原因有哪些，该如何有效诊断并解决这些问题？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 186,
+        "query": "如何为温控器设置日期和时间，以实现精准的日程和温度控制？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 187,
+        "query": "如何调整温控器的系统和风扇运行设置，以优化供暖和制冷效果？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 188,
+        "query": "如何调整温控器的程序日程，以实现高效的能源利用和温度控制？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 189,
+        "query": "如何在不影响已编程日程的情况下，临时更改温控器的温度设置？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 190,
+        "query": "当设备或系统出现警报界面时，应采取哪些操作？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 191,
+        "query": "针对热泵应如何修改接线，以确保连接正确且功能正常？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 192,
+        "query": "如何安全更换温控器的电池，确保更换后设备功能正常？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 193,
+        "query": "当标签与端子不匹配时，应如何正确为温控器重新接线，确保连接无误？"
+    },
+    {
+        "source": "可编程温控器手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 194,
+        "query": "遇到温控器故障时，可采用哪些故障排除解决方案？"
+    },
+    {
+        "source": "VR头显手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 195,
+        "query": "设备或系统中构成处理器单元的关键组件或部件有哪些？"
+    },
+    {
+        "source": "VR头显手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 196,
+        "query": "耳机有哪些类型，以及如何更换耳塞？"
+    },
+    {
+        "source": "VR头显手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 197,
+        "query": "为保持遮光罩的清晰度和功能性，正确的清洁步骤是什么？"
+    },
+    {
+        "source": "VR头显手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 198,
+        "query": "为确保安全且最佳的使用效果，游玩区域的推荐尺寸是多少？"
+    },
+    {
+        "source": "VR头显手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 199,
+        "query": "使用和操作VR头显时应采取哪些安全预防措施，以确保用户安全和设备使用寿命？"
+    },
+    {
+        "source": "功能键盘手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 200,
+        "query": "功能键盘的保修政策通常包含哪些内容，又不包含哪些内容？"
+    },
+    {
+        "source": "功能键盘手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 201,
+        "query": "功能键盘的保修政策中，损害赔偿的除外责任或免责声明通常是什么？"
+    },
+    {
+        "source": "功能键盘手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 202,
+        "query": "如何设置功能键盘？"
+    },
+    {
+        "source": "功能键盘手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 203,
+        "query": "如何拆卸和重新安装功能键盘的轴体？"
+    },
+    {
+        "source": "功能键盘手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 204,
+        "query": "如何将功能键盘搭配CAM软件使用？"
+    },
+    {
+        "source": "功能键盘手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 205,
+        "query": "如何在硬件模式下使用功能键盘？"
+    },
+    {
+        "source": "儿童电动摩托车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 206,
+        "query": "如何安装儿童电动摩托车的挡泥板？"
+    },
+    {
+        "source": "儿童电动摩托车手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 207,
+        "query": "如何安装儿童电动摩托车的前轮？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 208,
+        "query": "如何为蓝牙激光鼠标安装电池？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 209,
+        "query": "如何为蓝牙激光鼠标安装WIDCOMM蓝牙驱动程序？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 210,
+        "query": "如何为蓝牙激光鼠标卸载WIDCOMM蓝牙驱动程序？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 211,
+        "query": "如何在Windows系统中为蓝牙激光鼠标设置快速配对？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 212,
+        "query": "如何通过WIDCOMM蓝牙驱动程序为蓝牙激光鼠标设置配对？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 213,
+        "query": "如何查看蓝牙激光鼠标的电量状态？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 214,
+        "query": "如何首次为蓝牙激光鼠标使用该驱动程序？"
+    },
+    {
+        "source": "蓝牙激光鼠标手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 215,
+        "query": "如何将蓝牙激光鼠标与其他人机接口设备相连接？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 216,
+        "query": "如何拆卸烤箱门？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 217,
+        "query": "如何安装烤箱门？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 218,
+        "query": "如何移动烤箱的顶部加热元件（仅限部分型号）？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 219,
+        "query": "如何更换烤箱的后部灯（如有）？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 220,
+        "query": "如何使用烤箱的接油盘？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 221,
+        "query": "如何清洁烤箱外部？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 222,
+        "query": "如何使用烤箱的烤架？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 223,
+        "query": "烤箱的催化侧面板有什么作用？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 224,
+        "query": "如何使用烤箱的烤盘？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 225,
+        "query": "如何使用烤箱的烤架烤盘套装？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 226,
+        "query": "如何使用烤箱的油脂过滤器？"
+    },
+    {
+        "source": "烤箱手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 227,
+        "query": "如何使用烤箱的滑动搁架？"
+    },
+    {
+        "source": "相机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 228,
+        "query": "如何为混合即时相机安装肩带？"
+    },
+    {
+        "source": "相机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 229,
+        "query": "如何为混合即时相机装入电池？"
+    },
+    {
+        "source": "相机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 230,
+        "query": "如何为混合即时相机装入相纸盒？"
+    },
+    {
+        "source": "相机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 231,
+        "query": "如何为混合即时相机取出用完的相纸盒？"
+    },
+    {
+        "source": "相机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 232,
+        "query": "如何设置混合即时相机的自动打印模式？"
+    },
+    {
+        "source": "相机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 233,
+        "query": "如何设置混合即时相机的手动打印模式（初始设置）？"
+    },
+    {
+        "source": "相机手册.txt",
+        "question_type": "product",
+        "language": "chinese",
+        "id": 234,
+        "query": "如何使用混合即时相机拍摄照片？"
+    },
+    {
+        "source": "Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 241,
+        "query": "If this is the first time to use airfryer, What should I do before first use?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 242,
+        "query": "How to find the approval label of emission control certificate of the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 243,
+        "query": "How do I use the battery conversion feature before sailing?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 244,
+        "query": "How the ship steers?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 245,
+        "query": "What should I do if face over temperature warning on the boat?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 246,
+        "query": "If I want to listen to music on my phone, how do I turn on the sound system?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 247,
+        "query": "How do I use the storage compartments if I want to store wet items while on board?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 248,
+        "query": "How to open the battery compartment when manipulating the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 249,
+        "query": "How to install an anchor light while the boat is moving?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 250,
+        "query": "How do I use the jet wash function to clean the boat after using it?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 251,
+        "query": "How do I turn on or off the water supply button on my boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 252,
+        "query": "How to remove the bimini top of the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 253,
+        "query": "How do I install a bimini top on my boat if I want to use the canopy?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 254,
+        "query": "How to store the bimini top in the upright position of the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 255,
+        "query": "When I am sailing, how do I check the engine oil level to ensure continued sailing?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 256,
+        "query": "How can I use the bilge pump of the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 257,
+        "query": "How to perform anchor light switch check while sailing?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 258,
+        "query": "When I want to start the boat, how do I turn on the boat's engine to get the machine started?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 259,
+        "query": "How do I turn a boat while sailing?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 260,
+        "query": "How to operate the boat cross wakes and swells?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 261,
+        "query": "How do I load the boat when the cruise is over?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 262,
+        "query": "How to flush the cooling system of the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 263,
+        "query": "How to replace the fuse of the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 264,
+        "query": "How to check the engine oil level of the boat?"
+    },
+    {
+        "source": "Espresso Machine User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 265,
+        "query": "How to use the energy saving mode of a coffee machine?"
+    },
+    {
+        "source": "Espresso Machine User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 266,
+        "query": "How to change the default setting of the energy saving mode?"
+    },
+    {
+        "source": "Espresso Machine User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 267,
+        "query": "How to program the water valume of a coffee machine?"
+    },
+    {
+        "source": "Espresso Machine User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 268,
+        "query": "How should I do if I want to empty the system before not in use, for frost protection or before maintenance?"
+    },
+    {
+        "source": "Espresso Machine User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 269,
+        "query": "How should I do if I want to reset to factory settings of the coffee machine?"
+    },
+    {
+        "source": "Espresso Machine User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 270,
+        "query": "How should I clean my coffee maker after I use it so that it can last longer?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 271,
+        "query": "How to open the swim platform of the boat\\uff1f"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 272,
+        "query": "How to open the livewell and add water on the boat?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 273,
+        "query": "What is the maintenance setting screen of the boat controller?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 274,
+        "query": "In the boat's steering position, what does the factory reset screen show?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 275,
+        "query": "What is the trip screen shown?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 276,
+        "query": "When I am ready to sail, if everything is ready, how do I make the boat move forward?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 277,
+        "query": "How do I check the boat's steering system when I'm driving it?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 278,
+        "query": "How should fire extinguishers be stored on board and where should they be placed?"
+    },
+    {
+        "source": "2021 210FSH SPORT 210FSH DELUXE Boat Owner Operator Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 279,
+        "query": "How to care the throttle-cable of the boat?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 280,
+        "query": "How do I charge the camera battery when I'm not using it?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 281,
+        "query": "How to install the camera battery when another one is power off?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 282,
+        "query": "How do I connect the camera using a household power socket?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 283,
+        "query": "How do you mount the lens of a camera when preparing for photography?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 284,
+        "query": "How do you install the card into a camera before photography?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 285,
+        "query": "Have you ever wondered how to remove the camera shutter button? Understanding this process can enhance your photography experience and allow for quick repairs!"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 286,
+        "query": "How do I replace the camera's date/time battery?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 287,
+        "query": "How to set an off-center subject mode of a camera?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 288,
+        "query": "Before taking photos, we need to know How to use the eyepiece cover of the camera?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 289,
+        "query": "How do I select the AF Mode when before taking a picture?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 290,
+        "query": "How to set the camera model to \\\"P\\\" model?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 291,
+        "query": "After or during shooting, how can I view the camera image on TV for better clarity?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 292,
+        "query": "How can I delete a single image from my camera if I don't like the photo?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 293,
+        "query": "How can I erase all images from my camera if I don't like these."
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 294,
+        "query": "How do I print photos using the camera's CP direct method after taking them?"
+    },
+    {
+        "source": "Digital SLR Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 295,
+        "query": "How do you set up the camera to fine tune the model when using it?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 296,
+        "query": "After the earphones is in my hand, what are the components I should have?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 297,
+        "query": "If the case battery of earphones is low, how can I charge is?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 298,
+        "query": "When bluetooth are pairing and connecting, what scenarios I might encounter?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 299,
+        "query": "What are the two main controling functions of earphones?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 300,
+        "query": "Besides the two main controling functions, what other functions of the earphones can I operate?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 301,
+        "query": "If my earphones won't work, how can I reset them?"
+    },
+    {
+        "source": "Active Noise Canceling Truly Wireless Earphones User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 302,
+        "query": "What are the maintenance and care policies of the earphones?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 303,
+        "query": "From three different observing views, what buttons and interfaces should this eReader have?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 304,
+        "query": "What do the functions of Main Menu and Browser History of the eReader can do?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 305,
+        "query": "When in eBook mode of this eReader, what will happen after pressing \\\"M\\\" botton?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 306,
+        "query": "If I want to listen to music using this eReader, what should I do?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 307,
+        "query": "Can this eReader record voice? If so, how do I operate this feature?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 308,
+        "query": "I can't find the way to play video using this eReader, can you tell me how to do that?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 309,
+        "query": "Can this eReader become a photo viewer? If so, how do I operate this feature?"
+    },
+    {
+        "source": "Color E-Reader User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 310,
+        "query": "When using this eReader, what kinds of trobles might I encounter and how to solve them?"
+    },
+    {
+        "source": "Multi-Function Printer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 311,
+        "query": "When connecting the fax, hwo can I properly finish the procedure?"
+    },
+    {
+        "source": "Multi-Function Printer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 312,
+        "query": "What should I pay attention to in order to ensure my safety when using this fax?"
+    },
+    {
+        "source": "Multi-Function Printer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 313,
+        "query": "In order to keep your fingers safe, what should you pay attention to about the fax?"
+    },
+    {
+        "source": "Multi-Function Printer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 314,
+        "query": "I'm about to move this fax. Is there anything I should pay attention to?"
+    },
+    {
+        "source": "Multi-Function Printer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 315,
+        "query": "Are caution or warning labels inside the fax important? If not, can I remove them?"
+    },
+    {
+        "source": "Multi-Function Printer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 316,
+        "query": "If I'm in Canada, is there any statement of the fax vailable in my country?"
+    },
+    {
+        "source": "Kenmore Grill User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 317,
+        "query": "When using the grill, how to connect regulator to the LP Tank?"
+    },
+    {
+        "source": "Kenmore Grill User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 318,
+        "query": "To engure my safety when using the grill, how to do leak testing on valves, hose and regulatol?"
+    },
+    {
+        "source": "Kenmore Grill User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 319,
+        "query": "What should I pay attention to on ablout indirect cooking using the grill?"
+    },
+    {
+        "source": "Kenmore Grill User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 320,
+        "query": "What are the first three steps in assembly process of the grill according to the manual?"
+    },
+    {
+        "source": "Kenmore Grill User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 321,
+        "query": "Can you share me some safety tips using the grill?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 322,
+        "query": "What are identification numbers of my jetski? I don't understand that."
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 323,
+        "query": "I've heard that my jetski has cruising limitations. Please introduce them."
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 324,
+        "query": "I've heard that my jetski has cruising limitations. Please introduce them."
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 325,
+        "query": "What are the operation requirements if I want to use my jetski?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 326,
+        "query": "What kinds of watercraft characteristics does my jetski have?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 327,
+        "query": "When encountering vessels driving my jetski, what rules should I obey?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 328,
+        "query": "I'd like to remove and install the seat of my jetski, what steps should I follow?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 329,
+        "query": "In daily usage, how to open and close the hood of the jetski?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 330,
+        "query": "I've noticed that there are two different kinds of filler caps on the jetski. How to remove them?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 331,
+        "query": "If I need to manipulate the two kinds of engine switches on the jetski, what should I do?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 332,
+        "query": "There are two kinds of levers on the jetski, how to manipulate them?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 333,
+        "query": "What information should I obtain about Quick Shift Trim System (QSTS) selector when using my jetski"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 334,
+        "query": "What do fuel meter and hour meter on my jetski do?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 344,
+        "query": "Inspecting fuel filter and fuel tank of my jetski is important. How to do that?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 345,
+        "query": "How to adjust the adjustable sponson of my jetski if needed?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 346,
+        "query": "The intake and impeller of my jetski are dirty. How to clean them?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 347,
+        "query": "How to start my jetski in different situations?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 348,
+        "query": "What are basic steps to board my jetski with a passenger in deep water?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 349,
+        "query": "If it is difficult to balance the jetski at a stand still, what should I do?"
+    },
+    {
+        "source": "2005 WaveRunner User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 350,
+        "query": "What is the max load of the jetski?"
+    },
+    {
+        "source": "XL490 XL495 Telephone User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 351,
+        "query": "What is the overview of the base station of a landline?"
+    },
+    {
+        "source": "XL490 XL495 Telephone User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 352,
+        "query": "How can you connect the base station of a landline?"
+    },
+    {
+        "source": "XL490 XL495 Telephone User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 353,
+        "query": "How can you install the handset of a landline?"
+    },
+    {
+        "source": "XL490 XL495 Telephone User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 354,
+        "query": "How can you check the battery level of a landline?"
+    },
+    {
+        "source": "XL490 XL495 Telephone User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 355,
+        "query": "What can you do if your landline is in searching status?"
+    },
+    {
+        "source": "XL490 XL495 Telephone User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 356,
+        "query": "How can you know about the current status with different LED indicator behavior on a landline?"
+    },
+    {
+        "source": "XL490 XL495 Telephone User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 357,
+        "query": "How can you know about the current status with different LED indicator behavior on the base station of a landline?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 358,
+        "query": "How can you lower the roll bar of a lawn mower?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 359,
+        "query": "How can you adjust the rear-shock assemblies for a lawn mower with suspension system only?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 360,
+        "query": "How can you adjust the height of cut for a lawn mower with an electric deck lift?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 361,
+        "query": "How can you load a lawn mower?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 362,
+        "query": "How can you unload a lawn mower?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 363,
+        "query": "How can you change the engine oil of a lawn mower?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 364,
+        "query": "How can you remove the filters of a lawn mower?"
+    },
+    {
+        "source": "Riding Lawn Mower User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 365,
+        "query": "How can you replace the mower belt of a lawn mower?"
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 366,
+        "query": "How can you set up control of a over-the-range microwave?"
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 367,
+        "query": "How can you set the light timer of a over-the-range microwave?"
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 368,
+        "query": "How can you set yout favorite recipe with a over-the-range microwave?"
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 369,
+        "query": "How can you reheat food with a over-the-range microwave?"
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 370,
+        "query": "How can you use auto defrost of a over-the-range microwave?"
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 371,
+        "query": "How can you clean the grease filter of a over-the-range microwave?"
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 372,
+        "query": "How can you replace the charcoal filter of a over-the-range microwave? "
+    },
+    {
+        "source": "Over-the-Range Microwave User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 373,
+        "query": "How can you replace the oven light of a over-the-range microwave? "
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 374,
+        "query": "How can you set the PCI Express 3.0 x16 slots of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 375,
+        "query": "How can you set the jumpers of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 376,
+        "query": "How can you set the rear panel connectors of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 377,
+        "query": "How can you set the onboard LED of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 378,
+        "query": "How can you update the BIOS file of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 379,
+        "query": "How can you create RAID of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 380,
+        "query": "How can you use SATA ODD & USB devices to install an operating system for a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 381,
+        "query": "How can you secure the motherboard to the chassis?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 382,
+        "query": "How can you prepare the installation of Central Processing Unit (CPU) for a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 383,
+        "query": "How do you know about system memory of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 384,
+        "query": "How do you know about Serial port connector (10-1 pin COM) of a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 385,
+        "query": "How do you know about TPM connector (14-1 pin TPM) for a motherboard?"
+    },
+    {
+        "source": "Motherboard User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 386,
+        "query": "How do you know about Thermal sensor connector (2-pin T_SENSOR) of a motherboard?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 387,
+        "query": "How can you set quick release for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 388,
+        "query": "How can you set pressure cooking lid for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 389,
+        "query": "How can you set float valve for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 390,
+        "query": "What do you know about anti-block shield for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 391,
+        "query": "How can you set steam release valve for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 392,
+        "query": "How can you set anti-block shield for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 393,
+        "query": "How can you set silicone cap and float valve for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 394,
+        "query": "How can you Install the condensation collector for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 395,
+        "query": "How can you install the sealing ring for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 396,
+        "query": "How can you remove silicone sealing ring for a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 397,
+        "query": "What do you know about sealing ring of a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 398,
+        "query": "What do you know about steam release valve of a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 399,
+        "query": "What do you know about quick release button of a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Multi-use Pressure Cooker and Air Fryer User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 400,
+        "query": "What can you know about natural release(NRorNPR) of a multi-use pressure cooker and air fryer?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 401,
+        "query": "What is the robot anatomy of the vacuum?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 402,
+        "query": "What are the two primary modes available on a vacuum cleaner that can be used to tailor its performance to meet different home cleaning needs?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 403,
+        "query": "What is the proper procedure for emptying the vacuum cleaner's bin?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 404,
+        "query": "What is the correct procedure for cleaning the vacuum cleaner filter?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 405,
+        "query": "What is the proper procedure for cleaning the full bin sensors on a vacuum cleaner?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 406,
+        "query": "What is the correct procedure for cleaning the extractors (brushes or rollers) on a vacuum cleaner?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 407,
+        "query": "What is the proper procedure for cleaning the sensors and charging contacts on a vacuum cleaner?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 408,
+        "query": "What is the correct procedure for positioning the home base of a vacuum cleaner?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 409,
+        "query": "What is the proper procedure for cleaning the front caster wheel of a vacuum cleaner?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 410,
+        "query": "What is the correct procedure for cleaning the side brush of a vacuum cleaner?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 411,
+        "query": "What is the function of the dual-mode virtual wall barrier on a vacuum cleaner?"
+    },
+    {
+        "source": "Robot Vacuum User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 412,
+        "query": "What are the troubleshooting steps if the vacuum indicates a problem?"
+    },
+    {
+        "source": "MV Security Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 413,
+        "query": "What are the detailed instructions for T-rail mounting of a camera or equipment?"
+    },
+    {
+        "source": "MV Security Camera User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 414,
+        "query": "What are the steps to power the camera?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 415,
+        "query": "What is the proper way to use the brake lever and brake button?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 416,
+        "query": "What are the essential preparation checks to perform before using a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 417,
+        "query": "What are the detailed steps to start the engine of a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 418,
+        "query": "What is a V-BeltHolder?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 419,
+        "query": "What are the steps to adjust the throttle cable on a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 420,
+        "query": "What is the proper way to use the steering system on a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 421,
+        "query": "What are the correct steps to turn using a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 422,
+        "query": "What are the proper techniques for riding uphill on a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 423,
+        "query": "What are the proper techniques for riding downhill on a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 424,
+        "query": "What are the correct techniques for crossing a slope on a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 425,
+        "query": "What are the steps to inspect the spark plug on a snowmobile?"
+    },
+    {
+        "source": "Snowmobile User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 426,
+        "query": "What are the steps to clean a snowmobile?"
+    },
+    {
+        "source": "Color Television Owner Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 427,
+        "query": "What are the best methods for memorizing communication channels using a manual program?"
+    },
+    {
+        "source": "Color Television Owner Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 428,
+        "query": "What are the common causes and conditions that can lead to poor reception in television or radio signals?"
+    },
+    {
+        "source": "Color Television Owner Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 429,
+        "query": "What are the steps to enable and customize captions and on-screen text settings on a television?"
+    },
+    {
+        "source": "Color Television Owner Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 430,
+        "query": "What are the steps to properly connect and set up an outdoor antenna for optimal signal reception?"
+    },
+    {
+        "source": "Color Television Owner Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 431,
+        "query": "What are the steps to properly connect a DVD player to a television or audio system for optimal performance?"
+    },
+    {
+        "source": null,
+        "question_type": "general",
+        "language": "english",
+        "id": 432,
+        "query": "What are the key factors to check when troubleshooting technical issues or malfunctions?"
+    },
+    {
+        "source": null,
+        "question_type": "product",
+        "language": "english",
+        "id": 433,
+        "query": "What safety precautions should be followed to ensure safe operation during this process?"
+    },
+    {
+        "source": "Philips Sonicare Prestige Power Toothbrush User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 434,
+        "query": "How do you adjust the intensity settings on an electric toothbrush to suit your oral care needs?"
+    },
+    {
+        "source": "Philips Sonicare Prestige Power Toothbrush User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 435,
+        "query": "What are the steps to activate and deactivate the various features on an electric toothbrush for customized usage?"
+    },
+    {
+        "source": "Philips Sonicare Prestige Power Toothbrush User Manual.txt",
+        "question_type": "product",
+        "language": "english",
+        "id": 436,
+        "query": "What are the steps to charge an electric toothbrush when it is inside a travel case, and how do you ensure it charges properly?"
+    }
+]

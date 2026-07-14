@@ -1,0 +1,31 @@
+[project]
+name = "cs-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "defusedxml>=0.7.1",
+    "fastapi[standard]>=0.136.3",
+    "httpx[socks]>=0.28.1",
+    "langchain>=1.2.15",
+    "langchain-cohere>=0.5.1",
+    "langchain-community>=0.4.1",
+    "langchain-google-genai>=4.2.2",
+    "langchain-milvus==0.3.2",
+    "langchain-openai>=1.1.14",
+    "langchain-qwq>=0.3.5",
+    "langchain-text-splitters>=1.1.2",
+    "langgraph>=1.1.8",
+    "langgraph-checkpoint>=4.0.2",
+    "lingua-language-detector>=2.2.0",
+    "llama-index>=0.14.21",
+    "lxml>=6.1.0",
+    "matplotlib>=3.10.9",
+    "pylcs>=0.1.1",
+    "pymilvus==2.6.0",
+    "python-dotenv>=1.2.2",
+    "scalar-fastapi>=1.8.2",
+    "tiktoken>=0.12.0",
+]
