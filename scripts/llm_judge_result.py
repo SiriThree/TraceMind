@@ -13,11 +13,12 @@ from langchain_openai import ChatOpenAI
 from langchain_qwq import ChatQwQ
 from tqdm import tqdm
 
-from utils import convert_answer_to_ret, encode_image, get_image_name
+from tracemind.config import get_config
+from tracemind.utils import convert_answer_to_ret, encode_image, get_image_name
 
 load_dotenv()
 
-IMAGE_ROOT_DIR = os.getenv("IMAGE_ROOT_DIR", "data/KownledgeBase/手册/插图")
+IMAGE_ROOT_DIR = get_config()["IMAGE_ROOT_DIR"]
 
 judge_result_reanswer_prompt_template = """你是一个客服专家，你需要根据用户的问题对这段客服回答进行打分并进行优化。
 # 打分规则

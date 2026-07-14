@@ -1,7 +1,10 @@
+> 本项目为纯手写实现，欢迎 star 和 fork。
+# TraceMind：基于多模态 RAG 的可信产品客服 Agent
+TraceMind 是一个面向复杂产品咨询与手册问答场景的多模态客服 Agent，支持图文内容理解、查询分类、混合检索与证据约束生成，能够结合产品手册与配图返回更准确、更可追溯的客服式回答。
 
-# 项目背景
-本仓库是datafoundation的[多模态客服智能体竞赛](https://www.datafountain.cn/competitions/1165/ranking?isRedance=0&sch=2580&stage=B)的实现方案，A榜第0.855分，第十名，B榜0.83875分，第七名。
-该赛题需要参赛者构建一个多模态的客服智能体，针对用户问题，精准返回手册中对应的内容和相关配图。赛题中给了问题包含两类，一种为通识类，一种产品类。通识类问题并没有相关的知识库进行检索，需要模型理解问题并回答，产品类问题则需要参赛者构建一个RAG系统，先利用所给的中英文手册构建知识库，之后针对用户问题进行检索，最终智能体需要返回手册中对应的内容以及配图，图文互补，提升用户的理解效果。
+项目核心目标不是做一个简单的 FAQ 检索系统，而是构建一条更贴近真实客服场景的可信问答链路：先理解用户问题及其对应的图文上下文，再定位相关产品知识，最后生成图文互补、尽量减少幻觉的回答结果。
+
+本仓库最初来源于 datafoundation 多模态客服智能体竞赛的实现方案，并在此基础上继续整理为更清晰、更适合复用与展示的项目结构。
 
 # 整体架构图
 > 完整的技术方案查看[技术方案.md](技术方案.md)
@@ -18,41 +21,50 @@
 
 # 项目目录说明
 ```python
-cs_agent
+TraceMind
 ├─ README.md
-├─ answer_general_query.py #处理通识类问题的代码
-├─ answer_product_query.py # 处理产品类问题的代码
-├─ catalog # 分别对中英文手册生成的目录内容
-│  ├─ chinese_handbook_catalog.json
-│  └─ english_handbook_catalog.json
-├─ chunk.py # 手册切块、入库的代码
-├─ config.py # 配置文件，只需配置MILVUS_COLLECTION_NAME_DEFAULT变量即可，设置向量数据库的集合名称
-├─ data # 原始数据
-├─ del_bank_by_handbook.py # 根据手册名删除向量数据库中该手册的所有数据
-├─ generate_catalog.py # 生成手册目录的代码
-├─ generate_handbook_name.py # 生成英文手册名称的代码
-├─ handbook_name_gemini.json # 存放生成的英文手册名称
-├─ interface.py # 接口代码，提供给前端调用
-├─ llm_judge_result.py # 使用LLM给最终的结果打分的代码
-├─ milvus-docker-compose.yml # 部署milvus向量数据库的docker-compose文件
-├─ pipline.py #  智能体的入口文件
-├─ preprocess.py # 预处理代码，使用LLM对中英文手册内容进行预处理
-├─ processed_data # 预处理之后的数据，其中_formatted.txt为后缀的文件会用于接下来的切块和入库
-├─ prompts.py # 存放一些提示词
-├─ pyproject.toml 
-├─ query_classification.py # 对问题进行分类，预测手册名称的代码
-├─ question_public.csv # 公开的测试问题
-├─ retriever.py # 检索代码，根据问题检索相关的手册内容
-├─ submission # 存放提交结果的文件夹
-├─ submit.py # 根据测试问题生成运行pipeline，生成最终的提交结果
-├─ query_classification_results.json # 查询分类的测试结果
-├─ utils.py # 工具函数
-|- milvus-backup-files #向量数据库的备份
-|- backup.yaml #恢复备份的时候需要用到的配置文件
-|- mc #minio的命令行工具
-|- milvus-backup # milvus的备份和恢复的工具
+├─ assets # 项目流程图与说明配图
+├─ tracemind # 核心业务代码包
+│  ├─ api.py # FastAPI 接口实现
+│  ├─ pipeline.py # 智能体主链路
+│  ├─ answer_general_query.py # 通识问题处理
+│  ├─ answer_product_query.py # 产品问题处理
+│  ├─ query_classification.py # 查询分类与手册预测
+│  ├─ retriever.py # 混合检索逻辑
+│  ├─ prompts.py # 提示词模板
+│  ├─ utils.py # 通用工具函数
+│  └─ config.py # 配置读取
+├─ scripts # 离线处理、建库、评测脚本
+│  ├─ preprocess.py
+│  ├─ chunk.py
+│  ├─ generate_handbook_name.py
+│  ├─ generate_catalog.py
+│  ├─ submit.py
+│  ├─ del_bank_by_handbook.py
+│  └─ llm_judge_result.py
+├─ interface.py # 兼容入口，启动 API 服务
+├─ pipeline.py # 兼容入口，导出 pipeline 接口
+├─ pipline.py # 历史兼容入口，保留旧拼写
+├─ catalog # 中英文手册目录/摘要结果
+├─ data # 原始手册、插图和公开测试集
+├─ processed_data # 预处理后的手册与插图描述结果
+├─ submission # 批量问答生成的提交文件
+├─ milvus-docker-compose.yml # Milvus 部署文件
+├─ milvus-backup-files # 向量数据库备份
+├─ backup.yaml # 恢复备份配置
+├─ mc # MinIO 命令行工具
+├─ milvus-backup # Milvus 备份恢复工具
 └─ uv.lock
 ```
+
+其中几个最重要的目录可以这样理解：
+
+- `tracemind/`：在线问答主链路，包含查询分类、检索、回答生成和 API 服务。
+- `scripts/`：离线工作流脚本，负责预处理手册、生成目录、建库、提交与评测。
+- `data/`：原始输入数据，不直接改写，作为复现起点。
+- `processed_data/`：经过预处理后的中间产物，会被后续建库流程消费。
+- `catalog/`：中英文手册的目录或摘要，用于查询分类阶段辅助判断手册来源。
+- `submission/`：实验或比赛阶段生成的最终提交文件。
 
 
 
@@ -88,7 +100,7 @@ cs_agent
 
 1. 可以选择重新建立向量数据库，也可以使用已经建立好的向量数据库
 
-   重新建立向量数据库，需要运行`chunk.py`,对预处理好的数据进行切块并将pic转为对应的描述，再入库
+   重新建立向量数据库，需要运行`python -m scripts.chunk`，对预处理好的数据进行切块并将pic转为对应的描述，再入库
 
    如果需要使用我建立的向量数据库，则需要在启动之后将数据导入进去，`milvus-backup-files`中就是对应的数据,只需要在启动了milvus数据库了之后运行下面的命令即可将数据导入向量数据库中即可
 
@@ -116,13 +128,13 @@ cs_agent
 
 # 从0开始复现
 
-1. 运行`preprocess.py`使用`gemini-2.5-pro`对手册预处理
+1. 运行`python -m scripts.preprocess`使用`gemini-2.5-pro`对手册预处理
 
-2. 之后运行`chunk.py`对文本进行切块、将pic转为文本描述，最后将chunk向量化并入库
+2. 之后运行`python -m scripts.chunk`对文本进行切块、将pic转为文本描述，最后将chunk向量化并入库
 
-3. 运行`generate_handbook_name.py`生成英文的手册名称
+3. 运行`python -m scripts.generate_handbook_name`生成英文的手册名称
 
-4. 运行`generate_catalog.py`生成手册的目录
+4. 运行`python -m scripts.generate_catalog`生成手册的目录
 
 5. 启动接口
 

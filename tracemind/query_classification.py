@@ -14,9 +14,9 @@ from langchain_milvus import Milvus
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from tqdm import tqdm
 
-from config import get_config
-from prompts import get_all_source
-from utils import language_detect
+from tracemind.config import get_config
+from tracemind.prompts import get_all_source
+from tracemind.utils import language_detect
 
 load_dotenv()
 
@@ -226,7 +226,7 @@ async def get_source_by_dense_store(query: str) -> dict[str, str]:
 async def ensembles_query_classification(query: str) -> dict[str, str | bool]:
     """
     集成了query_classification_via_handbook_name、query_classification_via_toc、get_source_by_dense_store来对query进行一个分类
-    具体的流程可看assest/查询分类流程.png
+    具体的流程可看assets/查询分类流程.png
     """
     language = language_detect(query)
     query_classification_result_via_handbook_name = (

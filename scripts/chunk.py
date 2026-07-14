@@ -16,12 +16,12 @@ from langchain_text_splitters import (
 )
 from tqdm import tqdm
 
-from config import get_config
-from prompts import (
+from tracemind.config import get_config
+from tracemind.prompts import (
     generate_image_description_prompt_template,
     generate_image_description_prompt_template_without_context,
 )
-from utils import encode_image, get_image_name, language_detect
+from tracemind.utils import encode_image, get_image_name, language_detect
 
 load_dotenv()
 
@@ -118,7 +118,7 @@ def generate_image_description(
     :param language: 需要生成中文还是英文的图片描述
     :return: 图片的描述
     """
-    image_root_dir = Path(os.getenv("IMAGE_ROOT_DIR", "data/KownledgeBase/手册/插图"))
+    image_root_dir = Path(get_config()["IMAGE_ROOT_DIR"])
     image_path: Path = Path(image_root_dir, image_name)
     if not image_path.exists():
         raise FileNotFoundError(f"图片路径不存在：{image_path}")
@@ -187,9 +187,9 @@ def chunk_and_add_document(
     is_save_to_local: bool = False,
 ):
     """
-    对手册进行chunk化，并将其添加到milvus中，具体流程可看assest/知识库的构建.png
+    对手册进行chunk化，并将其添加到milvus中，具体流程可看assets/知识库的构建.png
     Args:
-        file_path (str): 手册的文件路径,例如processed_data/KownledgeBase/手册/冰箱手册_formatted.txt
+        file_path (str): 手册的文件路径,例如processed_data/KnowledgeBase/手册/冰箱手册_formatted.txt
         language (Literal["chinese", "english"]): 手册的语言，chinese或english
         source (str): 手册名称，例如冰箱手册.txt 或者 Espresso Machine User Manual.txt
         is_save_to_local (bool, optional): 是否将chunk的内容保存到本地，默认保存到knowledge_bank下，可以用来复现处理结果。查看哪里chunk的有问题，默认False
@@ -348,7 +348,7 @@ def chunk_and_add_document(
 
 if __name__ == "__main__":
     # 配置processed_dir
-    processed_dir = Path("processed_data/KownledgeBase/手册")
+    processed_dir = Path(get_config()["PROCESSED_DATA_ROOT_DIR"])
     
     config = get_config()
     collection_name = config["MILVUS_COLLECTION_NAME"]

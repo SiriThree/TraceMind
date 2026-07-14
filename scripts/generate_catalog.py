@@ -9,7 +9,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda
 from tqdm import tqdm
 
-from utils import language_detect
+from tracemind.config import get_config
+from tracemind.utils import language_detect
 
 load_dotenv()
 
@@ -59,7 +60,7 @@ def generate_catalog_or_summary(
 
 
 if __name__ == "__main__":
-    handbook_dir_path = Path("data/KownledgeBase/手册")
+    handbook_dir_path = Path(get_config()["DATA_ROOT_DIR"])
     english_gather_file = handbook_dir_path / "汇总英文手册.txt"
     english_results = []
     chinese_results = []

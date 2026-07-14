@@ -10,7 +10,8 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from prompts import (
+from tracemind.config import get_config
+from tracemind.prompts import (
     doc_parse_xml_prompt_template,
 )
 
@@ -213,11 +214,11 @@ def preprocess_all_handbook(
 
 
 if __name__ == "__main__":
-    # origin_file_path = "data/KownledgeBase/手册/冰箱手册.txt"
+    # origin_file_path = "data/KnowledgeBase/手册/冰箱手册.txt"
     # with open(origin_file_path, "r", encoding="utf-8") as f:
     #     content = f.read()
     # formatted_description, origin_description, image_path_list = format_data(content)
     # print(formatted_description)
     preprocess_all_handbook(
-        "data/KownledgeBase/手册", "processed_data/KownledgeBase/手册"
+        get_config()["DATA_ROOT_DIR"], get_config()["PROCESSED_DATA_ROOT_DIR"]
     )

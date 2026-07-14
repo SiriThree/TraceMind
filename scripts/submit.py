@@ -5,9 +5,10 @@ import pandas as pd
 from dotenv import load_dotenv
 from tqdm import tqdm
 
-from config import get_config
-from pipline import pipeline
 import uuid
+
+from tracemind.config import get_config
+from tracemind.pipeline import pipeline
 
 load_dotenv()
 

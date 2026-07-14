@@ -9,12 +9,18 @@ from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_openai import ChatOpenAI
 
 # from llm_judge_result import judge_result_by_llm, refine_answer
-from retriever import retriever
-from utils import convert_answer_to_ret, get_image_name, language_detect, parse_answer
+from tracemind.config import get_config
+from tracemind.retriever import retriever
+from tracemind.utils import (
+    convert_answer_to_ret,
+    get_image_name,
+    language_detect,
+    parse_answer,
+)
 
 load_dotenv()
 
-IMAGE_ROOT_DIR = os.getenv("IMAGE_ROOT_DIR", "data/KownledgeBase/手册/插图")
+IMAGE_ROOT_DIR = get_config()["IMAGE_ROOT_DIR"]
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

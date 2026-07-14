@@ -5,6 +5,8 @@ from typing import Literal
 
 from dotenv import load_dotenv
 
+from tracemind.config import get_config
+
 load_dotenv()
 
 
@@ -12,7 +14,7 @@ def get_all_source(language: Literal["chinese", "english"]) -> list[str]:
     """
     根据输入的语言返回所有手册的文件名
     """
-    data_dir = os.getenv("DATA_ROOT_DIR", "data/KownledgeBase/手册")
+    data_dir = get_config()["DATA_ROOT_DIR"]
     data_dir_path = Path(data_dir)
     source_list = data_dir_path.glob("*.txt")
     chinese_sources = [

@@ -5,7 +5,7 @@ from langchain_core.documents import Document
 from langchain_milvus import BM25BuiltInFunction, Milvus
 from langchain_openai import OpenAIEmbeddings
 
-from config import get_config
+from tracemind.config import get_config
 
 load_dotenv()
 

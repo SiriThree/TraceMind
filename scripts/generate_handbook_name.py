@@ -1,10 +1,13 @@
 import json
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
+
+from tracemind.config import get_config
 
 load_dotenv()
 
@@ -62,7 +65,7 @@ def generate_english_handbook_name(description: str) -> str:
 
 
 if __name__ == "__main__":
-    english_handbook_file = "data/KownledgeBase/手册/汇总英文手册.txt"
+    english_handbook_file = str(Path(get_config()["DATA_ROOT_DIR"]) / "汇总英文手册.txt")
     with open(english_handbook_file, "r", encoding="utf-8") as f:
         contents = f.readlines()
     # 修改保存的文件名称

@@ -9,12 +9,14 @@ from typing import Literal, cast
 from bs4 import BeautifulSoup
 from lingua import Language, LanguageDetectorBuilder
 
+from tracemind.config import get_config
+
 
 def get_image_name(image_name: str) -> str:
     """
     根据图片路径的stem，或者图片名称，原本的数据集中的图片是没有扩展名的，该函数返回带有扩展名的图片名称
     """
-    image_root_dir = Path(os.getenv("IMAGE_ROOT_DIR", "data/KownledgeBase/手册/插图"))
+    image_root_dir = Path(get_config()["IMAGE_ROOT_DIR"])
     extensions = [".png", ".jpg", ".jpeg"]
     for ext in extensions:
         image_path = Path(image_root_dir, image_name + ext)
