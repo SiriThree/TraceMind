@@ -36,7 +36,7 @@ generate_handbook_name_prompt_template = """
 
 def generate_english_handbook_name(description: str) -> str:
     """
-    英文手册没有手册名称，该函数根据英文手册的内容生成对应的手册名称，如handbook_name_gemini.json中的内容
+    英文手册没有手册名称，该函数根据英文手册的内容生成对应的手册名称，如catalog/handbook_name_gemini.json中的内容
     """
     prompt = PromptTemplate.from_template(
         generate_handbook_name_prompt_template, template_format="mustache"
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     with open(english_handbook_file, "r", encoding="utf-8") as f:
         contents = f.readlines()
     # 修改保存的文件名称
-    handbook_name_file = "handbook_name_gemini.json"
+    handbook_name_file = "catalog/handbook_name_gemini.json"
     handbook_names = []
     for i, content in enumerate(contents):
         data = eval(content)

@@ -67,7 +67,7 @@ if __name__ == "__main__":
     english_exist_handbook_names = []
     chinese_exist_handbook_names = []
     english_handbook_name_file = os.getenv(
-        "ENGLISH_HANDBOOK_NAME_FILE", "handbook_name_gemini.json"
+        "ENGLISH_HANDBOOK_NAME_FILE", "catalog/handbook_name_gemini.json"
     )
 
     english_catalog_file = "catalog/english_handbook_catalog.json"

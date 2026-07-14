@@ -5,6 +5,8 @@ knowledge_bank
 knowledge_bank_without_context
 eval
 configs
+!configs/
+!configs/backup.yaml
 experiment
 statistics_retriever_length
 # Byte-compiled / optimized / DLL files
