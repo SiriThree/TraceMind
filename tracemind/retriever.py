@@ -1,20 +1,19 @@
+import logging
 import os
 
 from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langchain_milvus import BM25BuiltInFunction, Milvus
-from langchain_openai import OpenAIEmbeddings
 
 from tracemind.config import get_config
+from tracemind.model_factory import create_embedding_model
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
 
-embedding_model = OpenAIEmbeddings(
-    model="text-embedding-3-large",
-    base_url=os.getenv("EMBEDDING_BASE_URL"),
-    api_key=os.getenv("EMBEDDING_API_KEY"),
-)
+
+embedding_model = create_embedding_model()
 DEFAULT_MILVUS_CONNECTION = {
     "host": os.getenv("MILVUS_HOST", "127.0.0.1"),
     "port": os.getenv("MILVUS_PORT", "19530"),
@@ -81,6 +80,16 @@ async def retriever(
     #     expr = f"language == '{language}'"
 
     # 根据source和language进行文档的筛选，再混合检索
+    logger.info(
+        "retriever:start query=%r language=%s source=%s use_source=%s use_query_cls=%s top_k=%s expr=%s",
+        query,
+        language,
+        llm_predict_source,
+        use_source,
+        use_query_cls,
+        top_k,
+        expr,
+    )
     results = await milvus.asimilarity_search(
         query,
         k=top_k,
@@ -99,6 +108,16 @@ async def retriever(
         ranker_type="rrf",
     )
 
+    logger.info("retriever:done hits=%s", len(results))
+    for idx, result in enumerate(results[:3], start=1):
+        snippet = result.page_content.replace("\n", " ")[:160]
+        logger.info(
+            "retriever:hit rank=%s source=%s index=%s snippet=%r",
+            idx,
+            result.metadata.get("source"),
+            result.metadata.get("index"),
+            snippet,
+        )
     if llm_predict_source is not None and use_source and use_query_cls:
         # 根据index字段，对results进行排序，确保每个chunk的相对顺序和原文的顺序一致
         sorted_results = sorted(

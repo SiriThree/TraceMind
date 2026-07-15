@@ -1,15 +1,15 @@
 import json
 import logging
-import os
 import time
-from collections.abc import AsyncGenerator, AsyncIterator
-from typing import Literal
+from collections.abc import AsyncGenerator
+from typing import Literal, TypedDict
 
 from dotenv import load_dotenv
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 
 from tracemind.answer_general_query import answer_general_query
 from tracemind.answer_product_query import answer_product_query
+from tracemind.clarifier import clarify_query, format_clarification_message
 from tracemind.config import get_config
 from tracemind.query_classification import ensembles_query_classification
 from tracemind.utils import language_detect
@@ -19,6 +19,12 @@ load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+class PipelineResult(TypedDict):
+    answer: str
+    response_type: Literal["answer", "clarification"]
+    candidate_intents: list[str]
 
 
 def ensure_answer_language(
@@ -68,18 +74,38 @@ async def router_by_query_cls(x: dict) -> str:
 
 
 async def pipeline(query: str, thread_id: str | None = None, top_k: int = 19) -> str:
+    result = await pipeline_result(query, thread_id=thread_id, top_k=top_k)
+    return result["answer"]
+
+
+async def pipeline_result(
+    query: str, thread_id: str | None = None, top_k: int = 19
+) -> PipelineResult:
+    cleaned_query = query.strip('"')
+    clarification = await clarify_query(cleaned_query)
+    if clarification["need_clarification"]:
+        return {
+            "answer": format_clarification_message(clarification),
+            "response_type": "clarification",
+            "candidate_intents": clarification["candidate_intents"],
+        }
+
     pipeline_chain = RunnablePassthrough.assign(
         query_cls=RunnableLambda(wrap_ensembles_query_classification)
     ) | RunnableLambda(router_by_query_cls)
     answer = await pipeline_chain.with_retry().ainvoke(
         {
-            "query": query.strip('"'),
+            "query": cleaned_query,
             "top_k": top_k,
             "use_source": True,
             "thread_id": thread_id,
         }
     )
-    return answer
+    return {
+        "answer": answer,
+        "response_type": "answer",
+        "candidate_intents": [],
+    }
 
 
 async def pipeline_stream(
@@ -87,6 +113,16 @@ async def pipeline_stream(
     thread_id: str | None = None,
     top_k: int = 19,
 ) -> AsyncGenerator[str, None]:
+    result = await pipeline_result(query, thread_id=thread_id, top_k=top_k)
+    if result["response_type"] == "clarification":
+        data = {
+            "delta": result["answer"],
+            "response_type": result["response_type"],
+            "candidate_intents": result["candidate_intents"],
+        }
+        yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+        return
+
     pipeline_chain = RunnablePassthrough.assign(
         query_cls=RunnableLambda(wrap_ensembles_query_classification)
     ) | RunnableLambda(router_by_query_cls)
@@ -103,7 +139,7 @@ async def pipeline_stream(
         if event["event"] == "on_chat_model_stream":
             chunk = event["data"]["chunk"]
             if chunk.content:
-                data = {"delta": chunk.content}
+                data = {"delta": chunk.content, "response_type": "answer"}
                 yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
                 # yield  chunk.content
 

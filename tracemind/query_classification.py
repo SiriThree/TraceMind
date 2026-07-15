@@ -1,4 +1,5 @@
 import asyncio
+import ast
 import json
 import logging
 import os
@@ -8,13 +9,12 @@ from typing import Literal
 
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_milvus import Milvus
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from tqdm import tqdm
 
 from tracemind.config import get_config
+from tracemind.model_factory import create_chat_model, create_embedding_model
 from tracemind.prompts import get_all_source
 from tracemind.utils import language_detect
 
@@ -24,11 +24,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-embedding_model = OpenAIEmbeddings(
-    model="text-embedding-3-large",
-    base_url=os.getenv("EMBEDDING_BASE_URL"),
-    api_key=os.getenv("EMBEDDING_API_KEY"),
-)
+embedding_model = create_embedding_model()
 DEFAULT_MILVUS_CONNECTION = {
     "host": os.getenv("MILVUS_HOST", "127.0.0.1"),
     "port": os.getenv("MILVUS_PORT", "19530"),
@@ -36,11 +32,27 @@ DEFAULT_MILVUS_CONNECTION = {
 }
 
 
-query_classification_model = ChatOpenAI(
-    model="gpt-5.4",
-    base_url=os.getenv("OPEANAI_BASE_URL"),
-    api_key=os.getenv("OPEANAI_API_KEY"),
-)
+query_classification_model = create_chat_model("CLASSIFIER_LLM")
+
+
+def parse_jsonish_dict(text: str) -> dict:
+    """
+    Parse structured model output that may be valid JSON or Python-dict-like text.
+    DeepSeek and some compatible endpoints occasionally return single-quoted dicts.
+    """
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = cleaned.strip("`")
+        if cleaned.lower().startswith("json"):
+            cleaned = cleaned[4:].strip()
+
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        parsed = ast.literal_eval(cleaned)
+        if not isinstance(parsed, dict):
+            raise ValueError(f"Expected dict output, got: {type(parsed)!r}")
+        return parsed
 
 
 def get_query_classification_prompt(language: Literal["chinese", "english"]) -> str:
@@ -116,8 +128,10 @@ async def query_classification_via_handbook_name(query: str) -> dict[str, str]:
         get_query_classification_prompt(language), template_format="mustache"
     )
     query_classification_chain = (
-        query_classification_prompt | query_classification_model
-    ) | JsonOutputParser()
+        query_classification_prompt
+        | query_classification_model
+        | (lambda msg: parse_jsonish_dict(msg.content))
+    )
     query_classification_result = await query_classification_chain.with_retry(
         stop_after_attempt=5
     ).ainvoke({"query": query})
@@ -181,8 +195,10 @@ async def query_classification_via_toc(query: str) -> dict[str, str]:
     )
 
     query_classification_chain = (
-        query_classification_toc_prompt | query_classification_model
-    ) | JsonOutputParser()
+        query_classification_toc_prompt
+        | query_classification_model
+        | (lambda msg: parse_jsonish_dict(msg.content))
+    )
     query_classification_result = await query_classification_chain.with_retry(
         stop_after_attempt=5
     ).ainvoke({"query": query})

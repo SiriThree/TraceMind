@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
-from langchain_openai import ChatOpenAI
 
 # from llm_judge_result import judge_result_by_llm, refine_answer
 from tracemind.config import get_config
+from tracemind.model_factory import create_chat_model
 from tracemind.retriever import retriever
 from tracemind.utils import (
     convert_answer_to_ret,
@@ -26,10 +26,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-refine_answer_llm = ChatOpenAI(
-    model="gpt-5.5",
-    base_url=os.getenv("OPEANAI_BASE_URL"),
-    api_key=os.getenv("OPEANAI_API_KEY"),
+refine_answer_llm = create_chat_model(
+    "REFINE_LLM",
     tags=["final_answer_model"],
 )
 
@@ -61,6 +59,12 @@ async def get_context(x: dict) -> str:
         x["query_cls"],
         x["top_k"],
         x["use_source"],
+    )
+    logger.info(
+        "product:get_context query=%r use_source=%s chunks=%s",
+        x["query"],
+        x["use_source"],
+        len(results),
     )
     return "\n\n".join([result.page_content for result in results])
 
@@ -127,7 +131,11 @@ async def refine_answer_direct(query: str, origin_ret: str, context: str) -> str
         }
     )
 
-    ret = convert_answer_to_ret(result["refined_answer"])
+    try:
+        ret = convert_answer_to_ret(result["refined_answer"])
+    except Exception:
+        logger.exception("refine_answer_direct: failed to parse refined answer, fallback to original answer")
+        return origin_ret
 
     new_data = ret.split(",[")
     if len(new_data) > 1:
@@ -168,11 +176,15 @@ async def answer_product_query(
     use_source: bool,
 ):
     """处理产品类的问题，得到最终的答案"""
-    llm = ChatOpenAI(
-        model="gpt-5.5",
-        base_url=os.getenv("OPEANAI_BASE_URL"),
-        api_key=os.getenv("OPEANAI_API_KEY"),
+    logger.info(
+        "product:start query=%r source=%s language=%s top_k=%s use_source=%s",
+        query,
+        query_cls.get("source"),
+        query_cls.get("language"),
+        top_k,
+        use_source,
     )
+    llm = create_chat_model("PRODUCT_LLM")
     generate_answer_prompt_template = """你是一个智能客服，你需要根据用户的问题，以及知识库中检索出的相关上下文来回答用户的问题，上下文内容中<picture-description></picture-description>中的内容是插图的内容，属性image_name是对应的图片名称。
 # 任务
 你需要以图文互补的形式来回答用户的问题，需要插入图片的地方你需要使用PIC标签来表示图片，image_name的属性是图片名。例如：<pic image_name="Manual16_01"></pic>
@@ -232,9 +244,16 @@ async def answer_product_query(
     answer = res["parsed_answer"][0]
     image_names = res["parsed_answer"][1]
     context = res["context"]
+    logger.info(
+        "product:first_pass answer_preview=%r images=%s context_chars=%s",
+        answer[:160],
+        len(image_names),
+        len(context),
+    )
     # 如果查询分类错误可能会导致检索的上下文不相关，导致模型回答不了
     if not llm_can_answer_the_question(answer):
         logger.info(f"first answer: {query} -> {answer}")
+        logger.info("product:fallback retry_without_source=True")
         # 不使用查询分类预测的 source 重新检索，并基于新上下文重新生成答案
         res = await product_answer_chain.ainvoke(
             {
@@ -247,10 +266,17 @@ async def answer_product_query(
         answer = res["parsed_answer"][0]
         image_names = res["parsed_answer"][1]
         context = res["context"]
+        logger.info(
+            "product:second_pass answer_preview=%r images=%s context_chars=%s",
+            answer[:160],
+            len(image_names),
+            len(context),
+        )
 
     origin_ret = answer
     if image_names and len(image_names) > 0:
         origin_ret += "," + str(image_names)
     # 优化生成的答案
     new_ret = await refine_answer_direct(query, origin_ret, context)
+    logger.info("product:final answer_preview=%r", new_ret[:200])
     return new_ret

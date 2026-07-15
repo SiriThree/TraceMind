@@ -29,3 +29,11 @@ dependencies = [
     "scalar-fastapi>=1.8.2",
     "tiktoken>=0.12.0",
 ]
+
+[build-system]
+requires = ["setuptools>=83.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["tracemind", "scripts"]
+py-modules = ["interface", "pipeline"]

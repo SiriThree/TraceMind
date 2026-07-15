@@ -10,13 +10,14 @@ from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_milvus import BM25BuiltInFunction, Milvus
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import ChatOpenAI
 from langchain_text_splitters import (
     MarkdownHeaderTextSplitter,
 )
 from tqdm import tqdm
 
 from tracemind.config import get_config
+from tracemind.model_factory import create_chat_model, create_embedding_model
 from tracemind.prompts import (
     generate_image_description_prompt_template,
     generate_image_description_prompt_template_without_context,
@@ -29,12 +30,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # openai的embedding模型效果更好
-embedding_model = OpenAIEmbeddings(
-    # model="qwen3-embedding-8b",
-    model="text-embedding-3-large",
-    base_url=os.getenv("EMBEDDING_BASE_URL"),
-    api_key=os.getenv("EMBEDDING_API_KEY"),
-)
+embedding_model = create_embedding_model()
 
 DEFAULT_MILVUS_CONNECTION = {
     "host": os.getenv("MILVUS_HOST", "127.0.0.1"),
@@ -100,6 +96,46 @@ def parse_image_description_tag(description: str) -> str:
     if tag:
         return tag.text
     raise Exception("图片描述标签不存在")
+
+
+def generate_image_description_from_context_only(
+    image_context: str,
+    image_name: str | Path,
+    file_name: str,
+    language: Literal["chinese", "english"],
+) -> str:
+    prompt_template = """
+你是一个产品手册整理助手。当前没有可用的视觉模型，请仅根据手册名、图片名和图片前后的上下文，
+生成一段适合作为图片占位说明的简短描述，帮助后续检索理解这一处插图大致与什么内容相关。
+
+要求：
+1. 使用{{language}}回答。
+2. 不要编造具体视觉细节。
+3. 描述简洁，能直接替换文中的 <PIC>。
+4. 只输出 XML。
+
+输出格式：
+<image_description>这里填写描述</image_description>
+
+手册名：{{file_name}}
+图片名：{{image_name}}
+上下文：
+{{image_context}}
+"""
+    llm = create_chat_model("IMAGE_DESC_LLM")
+    prompt = ChatPromptTemplate.from_messages(
+        [("human", prompt_template)],
+        template_format="mustache",
+    )
+    chain = prompt | llm | StrOutputParser() | parse_image_description_tag
+    return chain.with_retry(stop_after_attempt=5).invoke(
+        {
+            "file_name": file_name,
+            "image_name": Path(image_name).name,
+            "image_context": image_context,
+            "language": language,
+        }
+    )
 
 
 def generate_image_description(

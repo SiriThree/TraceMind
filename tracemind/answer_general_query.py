@@ -3,17 +3,14 @@ import os
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_core.runnables.config import RunnableConfig
-from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
+
+from tracemind.model_factory import create_chat_model
 
 load_dotenv()
 
-general_question_llm = ChatOpenAI(
-    # model="gemini-3.1-pro-preview",
-    # model="gemini-3-flash-preview",
-    model="gemini-3.5-flash",
-    base_url=os.getenv("GEMINI_BASE_URL"),
-    api_key=os.getenv("GEMINI_API_KEY"),
+general_question_llm = create_chat_model(
+    "GENERAL_LLM",
     tags=["final_answer_model"],
 )
 customer_system_prompt = """# Role

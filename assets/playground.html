@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TraceMind Playground</title>
+    <style>
+      :root {
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --line: #d9e0ea;
+        --text: #1f2937;
+        --subtle: #6b7280;
+        --accent: #2563eb;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--text); }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 48px; }
+      .head { margin-bottom: 20px; }
+      h1 { margin: 0 0 6px; font-size: 28px; }
+      .sub { color: var(--subtle); font-size: 14px; }
+      .grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 16px; }
+      .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+      .panel h2 { margin: 0 0 12px; font-size: 16px; }
+      .field { margin-bottom: 14px; }
+      .field label { display: block; font-size: 13px; margin-bottom: 6px; color: var(--subtle); }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      input, textarea, button { font: inherit; }
+      input, textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: #fff; color: var(--text); }
+      textarea { min-height: 180px; resize: vertical; }
+      .toolbar, .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+      button { border: 1px solid var(--line); border-radius: 8px; padding: 9px 14px; background: #fff; cursor: pointer; }
+      .primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+      .chip { border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+      .meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+      .meta-item, .answer-box, pre { border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; padding: 12px; }
+      .meta-key { font-size: 12px; color: var(--subtle); margin-bottom: 4px; }
+      .answer-box { white-space: pre-wrap; min-height: 160px; }
+      pre { margin: 0; min-height: 220px; overflow: auto; font-size: 12px; }
+      .status { margin-top: 10px; color: var(--subtle); font-size: 13px; }
+      @media (max-width: 900px) { .grid, .row, .meta { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="head">
+        <h1>TraceMind Playground</h1>
+        <div class="sub">直接观察澄清分支、正常回答分支和原始 JSON 返回。</div>
+      </div>
+      <div class="grid">
+        <section class="panel">
+          <h2>请求</h2>
+          <div class="row">
+            <div class="field">
+              <label for="baseUrl">Base URL</label>
+              <input id="baseUrl" value="" />
+            </div>
+            <div class="field">
+              <label for="token">Bearer Token</label>
+              <input id="token" value="kf_test" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="question">Question</label>
+            <textarea id="question">this page has an error</textarea>
+          </div>
+          <div class="field">
+            <label>Examples</label>
+            <div class="chips">
+              <button class="chip" data-question="this page has an error">英文模糊问题</button>
+              <button class="chip" data-question="this feature is not working">英文功能异常</button>
+              <button class="chip" data-question="这个页面报错了">中文模糊问题</button>
+              <button class="chip" data-question="使用吹风机时，人员需要佩戴哪些防护装备？">中文明确问题</button>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button id="sendBtn" class="primary">Send</button>
+            <button id="clearBtn">Clear</button>
+            <button id="copyBtn">Copy JSON</button>
+          </div>
+          <div id="status" class="status">Ready.</div>
+        </section>
+        <section class="panel">
+          <h2>响应</h2>
+          <div class="meta">
+            <div class="meta-item">
+              <div class="meta-key">response_type</div>
+              <div id="responseType">-</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-key">session_id</div>
+              <div id="sessionId">-</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Answer</label>
+            <div id="answerBox" class="answer-box"></div>
+          </div>
+          <div class="field">
+            <label>Raw JSON</label>
+            <pre id="rawJson"></pre>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script>
+      const baseUrlInput = document.getElementById("baseUrl");
+      const tokenInput = document.getElementById("token");
+      const questionInput = document.getElementById("question");
+      const sendBtn = document.getElementById("sendBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const statusEl = document.getElementById("status");
+      const responseTypeEl = document.getElementById("responseType");
+      const sessionIdEl = document.getElementById("sessionId");
+      const answerBoxEl = document.getElementById("answerBox");
+      const rawJsonEl = document.getElementById("rawJson");
+
+      baseUrlInput.value = window.location.origin;
+
+      document.querySelectorAll(".chip").forEach((button) => {
+        button.addEventListener("click", () => {
+          questionInput.value = button.dataset.question || "";
+        });
+      });
+
+      clearBtn.addEventListener("click", () => {
+        answerBoxEl.textContent = "";
+        rawJsonEl.textContent = "";
+        responseTypeEl.textContent = "-";
+        sessionIdEl.textContent = "-";
+        statusEl.textContent = "Cleared.";
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        if (!rawJsonEl.textContent) return;
+        await navigator.clipboard.writeText(rawJsonEl.textContent);
+        statusEl.textContent = "Raw JSON copied.";
+      });
+
+      sendBtn.addEventListener("click", async () => {
+        const baseUrl = baseUrlInput.value.trim().replace(/\/$/, "");
+        const token = tokenInput.value.trim();
+        const question = questionInput.value.trim();
+        if (!baseUrl || !question) {
+          statusEl.textContent = "Please fill base URL and question.";
+          return;
+        }
+        sendBtn.disabled = true;
+        statusEl.textContent = "Sending...";
+        try {
+          const response = await fetch(`${baseUrl}/chat`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ question, stream: false })
+          });
+          const text = await response.text();
+          const data = JSON.parse(text);
+          rawJsonEl.textContent = JSON.stringify(data, null, 2);
+          answerBoxEl.textContent = data?.data?.answer || "";
+          responseTypeEl.textContent = data?.data?.response_type || "-";
+          sessionIdEl.textContent = data?.data?.session_id || "-";
+          statusEl.textContent = response.ok ? "Success." : `HTTP ${response.status}`;
+        } catch (error) {
+          answerBoxEl.textContent = "";
+          rawJsonEl.textContent = String(error);
+          responseTypeEl.textContent = "-";
+          sessionIdEl.textContent = "-";
+          statusEl.textContent = "Request failed.";
+        } finally {
+          sendBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
