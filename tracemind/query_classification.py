@@ -1,21 +1,22 @@
-import asyncio
 import ast
 import json
 import logging
 import os
 from collections import Counter
-from pathlib import Path
 from typing import Literal
 
-import pandas as pd
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_milvus import Milvus
-from tqdm import tqdm
 
 from tracemind.config import get_config
 from tracemind.model_factory import create_chat_model, create_embedding_model
-from tracemind.prompts import get_all_source
+from tracemind.routing_scope import (
+    assess_query_scope_signal,
+    filter_candidate_sources,
+    merge_candidate_sources,
+    recall_catalog_candidates,
+)
 from tracemind.utils import language_detect
 
 load_dotenv()
@@ -25,6 +26,8 @@ logger = logging.getLogger(__name__)
 
 
 embedding_model = create_embedding_model()
+query_classification_model = create_chat_model("CLASSIFIER_LLM")
+
 DEFAULT_MILVUS_CONNECTION = {
     "host": os.getenv("MILVUS_HOST", "127.0.0.1"),
     "port": os.getenv("MILVUS_PORT", "19530"),
@@ -32,14 +35,7 @@ DEFAULT_MILVUS_CONNECTION = {
 }
 
 
-query_classification_model = create_chat_model("CLASSIFIER_LLM")
-
-
 def parse_jsonish_dict(text: str) -> dict:
-    """
-    Parse structured model output that may be valid JSON or Python-dict-like text.
-    DeepSeek and some compatible endpoints occasionally return single-quoted dicts.
-    """
     cleaned = text.strip()
     if cleaned.startswith("```"):
         cleaned = cleaned.strip("`")
@@ -55,160 +51,116 @@ def parse_jsonish_dict(text: str) -> dict:
         return parsed
 
 
-def get_query_classification_prompt(language: Literal["chinese", "english"]) -> str:
-    """
-    提示词
-    让LLM根据提供的手册名称，以及问题，判断该问题的类型，如果为product类型，则还需要判断该问题可以在哪个文档中找到答案
-    """
-    #     return (
-    #         f"""
-    # # Role
-    # 你是一个专业的查询分类专家，你的任务是根据用户的问题，按照我的要求对用户的问题进行分类。
+def _classify_query_prompt(language: Literal["chinese", "english"]) -> str:
+    if language == "chinese":
+        return """你是客服查询分流助手。请判断用户问题更适合走哪一类链路。
 
-    # # Task
-    # 我会提供一段用户的问题，你需要根据用户的问题，对用户的问题进行分类。
-    # 1. 判断用户的问题是否和某个产品相关,是否可以在以下的某个手册中找到。
-    #   目前的手册有: {get_all_source(language)}"""
-    #         + """
-    # # 输出的格式
-    # 请严格按照以下 JSON 结构输出（注意转义文本中的特殊字符以保证 JSON 的合法性）：
-    # {"""
-    #         + f"""source": Literal{[*get_all_source(language)]} | None # 判断用户的问题可能能在哪个手册中找到答案，如果用户的问题是通用性的问题，和某个产品无关，不能在所给的手册中找到相关的答案，则为None
-    #         """
-    #         + "question_type: Literal[product, general] # 如果source 不为None,则question_type=product,如果source为None,则你需要判断用户的问题是否是通识性问题（例如物流快递、投诉、发票、退货退款、维修、售后等问题），还是某个产品相关的问题，如果是通识性问题，则question_type=general,如果是产品相关问题，则question_type=product"
-    #         + """
-    # }
-    # # 用户的问题:
-    # <user-query>
-    # {{query}}
-    # </user-query>
-    # """
-    #     )
-    return (
-        f"""# Role
-你是一个专业的查询分类专家，你的任务是根据用户的问题，按照我的要求对用户的问题进行分类。
+任务：
+1. 如果问题明显是售前售后、退款、投诉、物流、发票、订单、人工客服等通用客服问题，则归类为 general。
+2. 如果问题明显依赖某个产品手册、设备说明、功能操作、故障排查、页面设置或部件说明，则归类为 product。
+3. 如果问题偏模糊，但核心仍然围绕某个设备、功能、故障或使用方法，优先归类为 product。
 
-
-# Task
-我会提供一段用户的问题，你需要根据用户的问题，对用户的问题进行分类。
-1. 判断用户的问题是否和某个产品相关,是否可以在以下的某个手册中找到。
-目前的手册有: {get_all_source(language)}"""
-        + """
-# 输出的格式
-请严格按照以下 JSON 结构输出（注意转义文本中的特殊字符以保证 JSON 的合法性）：
-{\n\t"""
-        + f"""'source': Literal{[*get_all_source(language)]} | None # 判断用户的问题可能能在哪个手册中找到答案，如果用户的问题是通用性的问题，和某个产品无关，不能在所给的手册中找到相关的答案，则为None。\n\t"""
-        + "'question_type': Literal[product, general] # 如果source 不为None,则question_type=product,如果source为None,则你需要判断用户的问题是否是通识性问题（例如物流快递、投诉、发票、退货退款、维修、售后等问题），还是某个产品相关的问题，如果是通识性问题，则question_type=general,如果是产品相关问题，则question_type=product。\n\t"
-        + "'source_confidence': float|None #source的置信度，如果source不为None，则你需要判断这个问题是与选择的source相关的置信度，范围在[0, 1]之间,如果source为None,则source_confidence为None。\n\t"
-        + "'question_confidence': float|None # 置信度，如果source为None并且question_type=general,则你需要判断这个问题属于通识性问题的置信度，范围在[0, 1]之间,其他情况则置信度为None。"
-        + """
-}
-# 用户的问题:
-<user-query>
-{{query}}
-</user-query>
-"""
-    )
-
-
-async def query_classification_via_handbook_name(query: str) -> dict[str, str]:
-    """
-    查询分类
-    让LLM根据提供的手册名称，以及问题，判断该问题的类型，如果为product类型，则还需要判断该问题可以在哪个文档中找到答案，以及需要输出对应的置信度
-    output schema:
-    {
-        source: str| None
-        question_type: Literal["product", "general"]
-        source_confidence: float | None
-        question_confidence: float | None
-    }
-    """
-    language = language_detect(query)
-    query_classification_prompt = PromptTemplate.from_template(
-        get_query_classification_prompt(language), template_format="mustache"
-    )
-    query_classification_chain = (
-        query_classification_prompt
-        | query_classification_model
-        | (lambda msg: parse_jsonish_dict(msg.content))
-    )
-    query_classification_result = await query_classification_chain.with_retry(
-        stop_after_attempt=5
-    ).ainvoke({"query": query})
-    return {"language": language, **query_classification_result}
-
-
-def get_query_classification_toc_prompt(language: Literal["chinese", "english"]) -> str:
-    """
-    提示词
-    让LLM根据提供的手册名称和目录内容，判断该问题可以在哪个手册中找到答案,
-    """
-    handbook_catalog_path = (
-        Path("catalog/chinese_handbook_catalog.json")
-        if language == "chinese"
-        else Path("catalog/english_handbook_catalog.json")
-    )
-    handbook_catalog = json.load(open(handbook_catalog_path, "r", encoding="utf-8"))
-    return (
-        """# Role
-你是一个专业的查询分类专家，你的任务是根据用户的问题,判断该问题可以在哪个手册中找到答案
-
-# Task
-我会提供用户的问题以及所有的手册名称和其目录内容，你需要根据我提供的内容，判断用户的问题可以在那个手册中找到答案
-
-
-# 所有的手册名称以及对应的大纲内容
-"""
-        + f"\n{handbook_catalog}"
-        + """
-# TIPS
-`handbook_name`字段为手册名称，`catalog`为手册的目录内容
-
-# 输出格式
-请严格按照以下 JSON 结构输出（注意转义文本中的特殊字符以保证 JSON 的合法性）：
+输出 JSON：
 {
-    "source": str | None, # 手册名称，如果你觉得用户的问题可以在某个手册中找到答案，则为该手册名称，否则为None,
-    "source_confidence": float | None, # source的置信度，如果source不为None，则你需要判断这个问题是与选择的source相关的置信度，范围在[0, 1]之间,如果source为None,则source_confidence为None
+  "question_type": "product" | "general",
+  "question_confidence": float,
+  "reason": str
 }
 
-# 用户的问题:
-<user-query>
+用户问题：
 {{query}}
-</user-query>
+"""
+    return """You are a support routing assistant. Decide which chain should handle the user query.
+
+Rules:
+1. Use "general" for order, refund, invoice, complaint, delivery, human support, or other generic support topics.
+2. Use "product" for product-manual questions, device operation, troubleshooting, feature guidance, settings, or component explanations.
+3. If the query is vague but still clearly about a device, feature, failure, or usage method, prefer "product".
+
+Output JSON:
+{
+  "question_type": "product" | "general",
+  "question_confidence": float,
+  "reason": str
+}
+
+User query:
+{{query}}
+"""
+
+
+def _select_source_prompt(
+    language: Literal["chinese", "english"],
+    candidate_entries: list[dict],
+) -> str:
+    if language == "chinese":
+        return (
+            """你是产品知识路由助手。请在候选手册中选择最可能回答用户问题的手册。
+
+要求：
+1. 只能在给定候选集中选择 source。
+2. 如果你认为这些候选都不可靠，可以返回 null。
+3. 优先依据产品类型、功能范围、故障现象、目录主题来判断。
+
+候选手册：
+"""
+            + json.dumps(candidate_entries, ensure_ascii=False, indent=2)
+            + """
+
+输出 JSON：
+{
+  "source": str | null,
+  "source_confidence": float | null,
+  "reason": str
+}
+
+用户问题：
+{{query}}
+"""
+        )
+    return (
+        """You are a product knowledge router. Choose the most likely manual from the candidate set.
+
+Rules:
+1. You must choose only from the given candidates.
+2. If none of them looks reliable, return null.
+3. Prefer evidence from product type, feature scope, failure symptoms, and catalog topics.
+
+Candidate manuals:
+"""
+        + json.dumps(candidate_entries, ensure_ascii=False, indent=2)
+        + """
+
+Output JSON:
+{
+  "source": str | null,
+  "source_confidence": float | null,
+  "reason": str
+}
+
+User query:
+{{query}}
 """
     )
 
 
-async def query_classification_via_toc(query: str) -> dict[str, str]:
-    """
-    查询分类
-    让LLM根据提供的手册名称和目录内容，判断该问题可以在哪个手册中找到答案,
-    output schema:
-    {
-        source: str| None
-        source_confidence: float | None
-    }
-    """
+async def classify_query_type(query: str) -> dict:
     language = language_detect(query)
-    query_classification_toc_prompt = PromptTemplate.from_template(
-        get_query_classification_toc_prompt(language), template_format="mustache"
+    prompt = PromptTemplate.from_template(
+        _classify_query_prompt(language),
+        template_format="mustache",
     )
-
-    query_classification_chain = (
-        query_classification_toc_prompt
-        | query_classification_model
-        | (lambda msg: parse_jsonish_dict(msg.content))
-    )
-    query_classification_result = await query_classification_chain.with_retry(
-        stop_after_attempt=5
-    ).ainvoke({"query": query})
-    return {"language": language, **query_classification_result}
+    chain = prompt | query_classification_model | (lambda msg: parse_jsonish_dict(msg.content))
+    result = await chain.with_retry(stop_after_attempt=5).ainvoke({"query": query})
+    return {"language": language, **result}
 
 
-async def get_source_by_dense_store(query: str) -> dict[str, str]:
-    """
-    使用语义相似度搜索出top10chunk，根据chunk对应的文档的数量来预测该问题可以在哪个手册中找到答案
-    """
+async def get_source_candidates_by_dense_store(
+    query: str,
+    language: Literal["chinese", "english"],
+    *,
+    top_k: int = 12,
+) -> list[dict]:
     dense_store = Milvus(
         embedding_function=embedding_model,
         collection_name=get_config()["MILVUS_COLLECTION_NAME"],
@@ -218,239 +170,141 @@ async def get_source_by_dense_store(query: str) -> dict[str, str]:
         drop_old=False,
         enable_dynamic_field=True,
         connection_args=DEFAULT_MILVUS_CONNECTION,
-        index_params=[
-            {
-                "index_type": "HNSW",
-                "metric_type": "COSINE",
-            },
-        ],
+        index_params=[{"index_type": "HNSW", "metric_type": "COSINE"}],
     )
-
-    top_k = 10
-    language = language_detect(query)
     dense_result = await dense_store.asimilarity_search(
         query,
         k=top_k,
         fetch_k=top_k,
         expr=f"language == '{language}'",
     )
-    source_counter = Counter([result.metadata["source"] for result in dense_result])
-    dense_predict_source = source_counter.most_common(1)[0][0]
-    return {"dense_predict_source": dense_predict_source}
-
-
-async def ensembles_query_classification(query: str) -> dict[str, str | bool]:
-    """
-    集成了query_classification_via_handbook_name、query_classification_via_toc、get_source_by_dense_store来对query进行一个分类
-    具体的流程可看assets/查询分类流程.png
-    """
-    language = language_detect(query)
-    query_classification_result_via_handbook_name = (
-        await query_classification_via_handbook_name(query)
+    source_counter = Counter(
+        result.metadata.get("source")
+        for result in dense_result
+        if result.metadata.get("source")
     )
-    question_type = query_classification_result_via_handbook_name["question_type"]
-    question_confidence_via_handbook_name = (
-        query_classification_result_via_handbook_name["question_confidence"]
-    )
-    source_via_handbook_name = query_classification_result_via_handbook_name["source"]
-    source_confidence_via_handbook_name = query_classification_result_via_handbook_name[
-        "source_confidence"
+    return [
+        {"source": source, "hits": hits}
+        for source, hits in source_counter.most_common(5)
     ]
-    final_source = None
-    final_question_type = None
-    only_llm_predict_once = False
-    if question_type == "general":
-        if question_confidence_via_handbook_name < 0.98:
-            query_classification_result_via_toc = await query_classification_via_toc(
-                query
-            )
-            if query_classification_result_via_toc["source"] is not None:
-                final_source = query_classification_result_via_toc["source"]
-                final_question_type = "product"
-            else:
-                final_source = None
-                final_question_type = question_type
+
+
+async def select_source_from_candidates(
+    query: str,
+    language: Literal["chinese", "english"],
+    candidate_sources: list[dict],
+) -> dict:
+    candidate_entries = [
+        {
+            "source": item["source"],
+            "catalog_preview": item.get("catalog_preview", ""),
+            "matched_terms": item.get("matched_terms", []),
+            "catalog_score": item.get("catalog_score", 0),
+            "dense_hits": item.get("dense_hits", 0),
+        }
+        for item in candidate_sources
+    ]
+    prompt = PromptTemplate.from_template(
+        _select_source_prompt(language, candidate_entries),
+        template_format="mustache",
+    )
+    chain = prompt | query_classification_model | (lambda msg: parse_jsonish_dict(msg.content))
+    result = await chain.with_retry(stop_after_attempt=5).ainvoke({"query": query})
+    return result
+
+
+async def ensembles_query_classification(
+    query: str,
+    source_hint: str | None = None,
+) -> dict[str, str | bool | list | dict | None]:
+    language = language_detect(query)
+    if source_hint is not None:
+        return {
+            "source": source_hint,
+            "question_type": "product",
+            "language": language,
+            "source_hint_applied": True,
+            "candidate_sources": [source_hint],
+            "route_debug": {
+                "query_type_reason": "source_hint_locked",
+                "catalog_candidates": [],
+                "dense_candidates": [],
+                "candidate_sources": [source_hint],
+                "selected_source_reason": "source_hint_locked",
+            },
+        }
+
+    query_type_result = await classify_query_type(query)
+    question_type = query_type_result["question_type"]
+    question_confidence = query_type_result.get("question_confidence")
+    scope_signal = assess_query_scope_signal(query, language)
+
+    if question_type == "general" and question_confidence is not None and question_confidence >= 0.96:
+        return {
+            "source": None,
+            "question_type": "general",
+            "language": language,
+            "source_hint_applied": False,
+            "candidate_sources": [],
+            "route_debug": {
+                "query_type_reason": query_type_result.get("reason", ""),
+                "scope_signal": scope_signal,
+                "catalog_candidates": [],
+                "dense_candidates": [],
+                "candidate_sources": [],
+                "selected_source_reason": "high_confidence_general",
+            },
+        }
+
+    catalog_candidates = []
+    dense_candidates = []
+    if scope_signal["allow_catalog_scope"]:
+        catalog_candidates = recall_catalog_candidates(query, language, top_n=5)
+    if scope_signal["allow_dense_scope"]:
+        dense_candidates = await get_source_candidates_by_dense_store(query, language)
+
+    merged_candidates = merge_candidate_sources(catalog_candidates, dense_candidates, top_n=5)
+    merged_candidates = filter_candidate_sources(merged_candidates)
+    candidate_sources = [item["source"] for item in merged_candidates]
+
+    selected_source = None
+    selected_reason = "no_candidate_scope"
+    source_confidence = None
+
+    if candidate_sources:
+        if len(candidate_sources) == 1:
+            selected_source = candidate_sources[0]
+            source_confidence = 0.9
+            selected_reason = "single_candidate_scope"
         else:
-            final_source = None
-            final_question_type = question_type
-    else:
-        # question_type == "product"
-        final_question_type = question_type
-        # 如果handbook_name 没有source，则取toc方式预测出的source
-        if source_via_handbook_name is None:
-            query_classification_result_via_toc = await query_classification_via_toc(
-                query
-            )
-            final_source = query_classification_result_via_toc["source"]
-        else:
-            # 如果LLM根据handbook_name 预测出了source，则需要判断置信度
-            if source_confidence_via_handbook_name >= 0.9:
-                final_source = source_via_handbook_name
-                only_llm_predict_once = True
-            else:
-                tasks = [
-                    asyncio.create_task(query_classification_via_toc(query)),
-                    asyncio.create_task(get_source_by_dense_store(query)),
-                ]
-                (
-                    query_classification_result_via_toc,
-                    dense_predict_results,
-                ) = await asyncio.gather(*tasks)
-                dense_predict_source = dense_predict_results["dense_predict_source"]
-                source_via_toc = query_classification_result_via_toc["source"]
-                source_confidence_via_toc = query_classification_result_via_toc[
-                    "source_confidence"
-                ]
-                # 如果有两个source 相等，则取这个为final_source
-                if (
-                    source_via_handbook_name == source_via_toc
-                    or source_via_handbook_name == dense_predict_source
-                    or source_via_toc == dense_predict_source
-                ):
-                    if source_via_handbook_name == source_via_toc:
-                        final_source = source_via_handbook_name
-                    elif source_via_handbook_name == dense_predict_source:
-                        final_source = source_via_handbook_name
-                    elif source_via_toc == dense_predict_source:
-                        final_source = source_via_toc
-                else:
-                    # 三个答案都不同
-                    final_source = (
-                        source_via_toc
-                        if source_confidence_via_toc
-                        >= source_confidence_via_handbook_name
-                        else source_via_handbook_name
-                    )
+            source_choice = await select_source_from_candidates(query, language, merged_candidates)
+            selected_source = source_choice.get("source")
+            source_confidence = source_choice.get("source_confidence")
+            selected_reason = source_choice.get("reason", "")
+
+    product_scope_reliable = bool(selected_source) or bool(catalog_candidates)
+    if not product_scope_reliable and question_type == "general":
+        candidate_sources = []
+        merged_candidates = []
+        selected_reason = "general_without_reliable_scope_evidence"
+
+    final_question_type = "product" if selected_source or candidate_sources else question_type
+
     return {
-        "source_via_handbook_name": source_via_handbook_name,
-        "source": final_source,
+        "source": selected_source,
         "question_type": final_question_type,
         "language": language,
-        "only_llm_predict_once": only_llm_predict_once,
+        "source_hint_applied": False,
+        "candidate_sources": candidate_sources,
+        "source_confidence": source_confidence,
+        "route_debug": {
+            "query_type_reason": query_type_result.get("reason", ""),
+            "query_type_confidence": question_confidence,
+            "scope_signal": scope_signal,
+            "catalog_candidates": catalog_candidates,
+            "dense_candidates": dense_candidates,
+            "merged_candidates": merged_candidates,
+            "candidate_sources": candidate_sources,
+            "selected_source_reason": selected_reason,
+        },
     }
-
-
-async def test_query_classification_via_toc():
-    """
-    测试query_classification_via_toc的效果
-    """
-    results = []
-    error_results = []
-    exist_last_id = -1
-    max_concurrency = 8
-    tasks = []
-    batch_ids = []
-    queries = []
-    end_id = 436
-    question_file = Path("data/question_public.csv")
-    query_classification_file = Path("test_query_classification_via_toc.json")
-    if query_classification_file.exists():
-        results = json.load(open(query_classification_file, "r"))["results"]
-        error_results = json.load(open(query_classification_file, "r"))["error_results"]
-        exist_last_id = max([result["id"] for result in results])
-    question_df = pd.read_csv(question_file, index_col="id")
-    for question_row in tqdm(question_df.iterrows(), total=len(question_df)):
-        id = question_row[0]
-        query = question_row[1]["question"].strip('"')
-        if id <= exist_last_id:
-            continue
-        if id <= end_id:
-            tasks.append(asyncio.create_task(query_classification_via_toc(query)))
-            batch_ids.append(id)
-            queries.append(query)
-            max_concurrency -= 1
-
-        if max_concurrency == 0 or id == end_id:
-            query_classification_results = await asyncio.gather(*tasks)
-            for id, query, query_classification_result in zip(
-                batch_ids, queries, query_classification_results
-            ):
-                query_classification_result["id"] = id
-                query_classification_result["query"] = query
-                results.append(query_classification_result)
-                with open(query_classification_file, "w") as f:
-                    json.dump(
-                        {"results": results, "error_results": error_results},
-                        f,
-                        ensure_ascii=False,
-                        indent=4,
-                    )
-                batch_ids = []
-                tasks = []
-                queries = []
-                max_concurrency = 8
-
-
-async def test_ensembles_query_classification():
-    """
-    测试ensembles_query_classification的效果
-    """
-    results = []
-    exist_last_id = -1
-    max_concurrency = 8
-    tasks = []
-    batch_ids = []
-    queries = []
-    start_id = 64
-    end_id = 436
-    question_file = Path("data/question_public.csv")
-    query_classification_file = Path(
-        "experiment/查询分类/query_classification_ratio1.json"
-    )
-    exist_last_id = start_id - 1
-    if query_classification_file.exists():
-        results = json.load(open(query_classification_file, "r"))
-        exist_last_id = max([result["id"] for result in results])
-
-    question_df = pd.read_csv(question_file, index_col="id")
-    for question_row in tqdm(question_df.iterrows(), total=len(question_df)):
-        id = question_row[0]
-        query = question_row[1]["question"].strip('"')
-        if id <= exist_last_id:
-            continue
-        if id <= end_id:
-            tasks.append(asyncio.create_task(ensembles_query_classification(query)))
-            batch_ids.append(id)
-            queries.append(query)
-            max_concurrency -= 1
-
-        if max_concurrency == 0 or id == end_id:
-            query_classification_results = await asyncio.gather(*tasks)
-            for id, query, query_classification_result in zip(
-                batch_ids, queries, query_classification_results
-            ):
-                query_classification_result["id"] = id
-                query_classification_result["query"] = query
-                results.append(query_classification_result)
-                with open(query_classification_file, "w") as f:
-                    json.dump(
-                        results,
-                        f,
-                        ensure_ascii=False,
-                        indent=4,
-                    )
-                batch_ids = []
-                tasks = []
-                queries = []
-                max_concurrency = 8
-
-
-if __name__ == "__main__":
-    # query = "请问你们家的商品支持7天无理由退换货吗？"
-
-    # query = "为保持遮光罩的清晰度和功能性，正确的清洁步骤是什么？"
-    # query = "How to change the default setting of the energy saving mode"
-    # query = "What is the trip screen shown?"
-    # query = "What is the proper way to use the brake lever and brake button?"
-    # query = " What are the best methods for memorizing communication channels using a manual program?"
-    #
-    # query = "我想了解一下你们的退款政策，退款多久能到账？"
-    # query_classification_result = query_classification(query)
-
-    # query = "设备或系统中构成处理器单元的关键组件或部件有哪些？"
-    # query = (
-    #     "If I want to listen to music on my phone, how do I turn on the sound system?"
-    # )
-    # query = "What are the steps to power the camera?"
-    # query_classification_result = asyncio.run(ensembles_query_classification(query))
-    asyncio.run(test_ensembles_query_classification())

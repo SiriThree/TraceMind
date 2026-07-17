@@ -1,25 +1,23 @@
-import os
 import re
 from typing import Literal, TypedDict
 
-from dotenv import load_dotenv
-from langchain_core.output_parsers import JsonOutputParser
-from langchain_core.prompts import PromptTemplate
-
-from tracemind.model_factory import create_chat_model
 from tracemind.utils import language_detect
 
-load_dotenv()
+
+class CandidateIntent(TypedDict):
+    id: str
+    label: str
+    slot_key: str
+    slot_value: str
 
 
 class ClarificationResult(TypedDict):
     need_clarification: bool
     reason: str
     clarifying_question: str
-    candidate_intents: list[str]
-
-
-clarifier_model = create_chat_model("CLARIFIER_LLM")
+    candidate_intents: list[CandidateIntent]
+    missing_slots: list[str]
+    trigger_signals: list[str]
 
 
 CHINESE_VAGUE_PATTERNS = [
@@ -27,21 +25,129 @@ CHINESE_VAGUE_PATTERNS = [
     r"这个功能.*(怎么|不好用|有问题)",
     r"这个页面.*(怎么|报错|有问题|进不去)",
     r"(怎么不好用|怎么不行|怎么失败了)",
-    r"(办不了|弄不了|搞不定|不会办)",
+    r"(办不了|弄不了|搞不定|不会用)",
     r"帮我看看",
     r"你看下",
 ]
 
 ENGLISH_VAGUE_PATTERNS = [
-    r"\bthis\b.*\b(not working|broken|error|issue|failed)\b",
+    r"\bthis\b.*\b(not working|broken|error|issue|failed|problem)\b",
     r"\bthis feature\b.*\b(how|issue|not working)\b",
     r"\bthis page\b.*\b(error|issue|can't open|not working)\b",
     r"\bhelp me check\b",
     r"\bcan you check\b",
 ]
 
+GENERIC_SUPPORT_INTENTS_ZH: list[CandidateIntent] = [
+    {
+        "id": "task_installation",
+        "label": "安装/连接",
+        "slot_key": "task_type",
+        "slot_value": "installation",
+    },
+    {
+        "id": "task_feature_usage",
+        "label": "功能使用",
+        "slot_key": "task_type",
+        "slot_value": "feature_usage",
+    },
+    {
+        "id": "task_fault",
+        "label": "故障报错",
+        "slot_key": "task_type",
+        "slot_value": "fault",
+    },
+    {
+        "id": "task_after_sales",
+        "label": "售后处理",
+        "slot_key": "task_type",
+        "slot_value": "after_sales",
+    },
+]
 
-def _detect_language_with_fallback(query: str) -> Literal["chinese", "english"]:
+GENERIC_SUPPORT_INTENTS_EN: list[CandidateIntent] = [
+    {
+        "id": "task_installation",
+        "label": "Setup",
+        "slot_key": "task_type",
+        "slot_value": "installation",
+    },
+    {
+        "id": "task_feature_usage",
+        "label": "Feature usage",
+        "slot_key": "task_type",
+        "slot_value": "feature_usage",
+    },
+    {
+        "id": "task_fault",
+        "label": "Fault or error",
+        "slot_key": "task_type",
+        "slot_value": "fault",
+    },
+    {
+        "id": "task_after_sales",
+        "label": "After-sales",
+        "slot_key": "task_type",
+        "slot_value": "after_sales",
+    },
+]
+
+ORDER_INTENTS_ZH: list[CandidateIntent] = [
+    {
+        "id": "order_refund",
+        "label": "退款",
+        "slot_key": "task_type",
+        "slot_value": "refund",
+    },
+    {
+        "id": "order_exchange",
+        "label": "换货",
+        "slot_key": "task_type",
+        "slot_value": "exchange",
+    },
+    {
+        "id": "order_repair",
+        "label": "维修",
+        "slot_key": "task_type",
+        "slot_value": "repair",
+    },
+    {
+        "id": "order_complaint",
+        "label": "投诉",
+        "slot_key": "task_type",
+        "slot_value": "complaint",
+    },
+]
+
+ORDER_INTENTS_EN: list[CandidateIntent] = [
+    {
+        "id": "order_refund",
+        "label": "Refund",
+        "slot_key": "task_type",
+        "slot_value": "refund",
+    },
+    {
+        "id": "order_exchange",
+        "label": "Exchange",
+        "slot_key": "task_type",
+        "slot_value": "exchange",
+    },
+    {
+        "id": "order_repair",
+        "label": "Repair",
+        "slot_key": "task_type",
+        "slot_value": "repair",
+    },
+    {
+        "id": "order_complaint",
+        "label": "Complaint",
+        "slot_key": "task_type",
+        "slot_value": "complaint",
+    },
+]
+
+
+def detect_language_with_fallback(query: str) -> Literal["chinese", "english"]:
     try:
         return language_detect(query)
     except Exception:
@@ -60,136 +166,204 @@ def _has_vague_signal(query: str, language: Literal["chinese", "english"]) -> bo
 
     stripped_query = query.strip()
     if language == "chinese":
-        return len(stripped_query) <= 12 and any(
-            token in stripped_query
-            for token in ["这个", "这个功能", "这个页面", "不好用", "不行", "报错", "有问题"]
+        vague_tokens = ["这个", "这个功能", "这个页面", "不好用", "不行", "报错", "有问题"]
+        return len(stripped_query) <= 16 and any(
+            token in stripped_query for token in vague_tokens
         )
-    return len(stripped_query.split()) <= 6 and any(
-        token in lowered_query
-        for token in ["this", "issue", "error", "not working", "problem"]
+
+    vague_tokens = ["this", "issue", "error", "problem", "not working"]
+    return len(stripped_query.split()) <= 8 and any(
+        token in lowered_query for token in vague_tokens
     )
 
 
-def _get_clarifier_prompt(language: Literal["chinese", "english"]) -> str:
+def _infer_missing_slots(query: str, language: Literal["chinese", "english"]) -> list[str]:
+    lowered_query = query.lower()
+    missing_slots: list[str] = []
+
     if language == "chinese":
-        return """# Role
-你是产品客服 Agent 的问题澄清助手。你的任务不是直接回答问题，而是判断用户当前问题是否信息不足，是否需要先追问。
+        generic_target = any(
+            token in query for token in ["这个产品", "这个型号", "这个页面", "这个功能"]
+        )
+        has_target = any(
+            token in query
+            for token in [
+                "产品",
+                "型号",
+                "页面",
+                "功能",
+                "吹风机",
+                "空调",
+                "洗碗机",
+                "蒸汽清洁机",
+                "空气净化器",
+            ]
+        ) and not generic_target
+        has_symptom = any(
+            token in query
+            for token in [
+                "报错",
+                "失败",
+                "没反应",
+                "没有反应",
+                "打不开",
+                "进不去",
+                "不好用",
+                "不行",
+                "启动不了",
+                "无法启动",
+                "开不了",
+            ]
+        )
+        has_task_type = any(
+            token in query
+            for token in ["退款", "换货", "维修", "投诉", "设置", "安装", "连接", "启动", "故障", "使用"]
+        ) or any(
+            token in lowered_query for token in ["fault", "repair", "refund", "exchange"]
+        )
+    else:
+        generic_target = any(
+            token in lowered_query
+            for token in ["this product", "this model", "this page", "this feature"]
+        )
+        has_target = any(
+            token in lowered_query for token in ["product", "model", "page", "feature", "screen"]
+        ) and not generic_target
+        has_symptom = any(
+            token in lowered_query
+            for token in ["error", "failed", "no response", "not working", "can't open", "problem"]
+        )
+        has_task_type = any(
+            token in lowered_query
+            for token in ["refund", "exchange", "repair", "complaint", "setup", "install", "connect", "fault"]
+        )
 
-# Task
-请根据用户问题，判断是否需要澄清。
+    if not has_target:
+        missing_slots.append("product_or_target")
+    if not has_task_type:
+        missing_slots.append("task_type")
+    if not has_symptom:
+        missing_slots.append("error_symptom")
 
-如果用户已经明确给出了产品、页面、功能、目标操作、报错现象中的大部分关键信息，则不需要澄清。
-如果用户的问题仍然模糊，例如只说“这个功能不好用”“这个页面报错”“这个业务办不了”“帮我看看”，则需要澄清。
+    return missing_slots
 
-如果需要澄清：
-1. 给出一句自然、客服风格的追问。
-2. 给出 2 到 4 个简短的候选补充方向，帮助用户快速补充信息。
 
-# Output Format
-请严格输出 JSON：
-{
-  "need_clarification": bool,
-  "reason": str,
-  "clarifying_question": str,
-  "candidate_intents": list[str]
-}
+def _build_candidate_intents(
+    query: str, language: Literal["chinese", "english"]
+) -> list[CandidateIntent]:
+    lowered_query = query.lower()
 
-# User Query
-{{query}}
-"""
-    return """# Role
-You are a clarification assistant for a customer support agent. Your job is not to answer directly. Your job is to decide whether the user's current question is still too vague and needs a follow-up question first.
+    if language == "chinese":
+        if any(token in query for token in ["订单", "退款", "换货", "维修", "投诉", "售后"]):
+            return ORDER_INTENTS_ZH
+        if any(token in query for token in ["页面", "报错", "功能", "不好用", "不行"]):
+            return GENERIC_SUPPORT_INTENTS_ZH
+        return GENERIC_SUPPORT_INTENTS_ZH[:3]
 
-# Task
-If the user already provided enough detail about the product, page, feature, goal, or error symptom, set need_clarification to false.
-If the user is still vague, such as saying "this feature is not working", "this page has an error", or "help me check this", set need_clarification to true.
+    if any(
+        token in lowered_query
+        for token in ["order", "refund", "exchange", "repair", "complaint", "after-sales"]
+    ):
+        return ORDER_INTENTS_EN
+    return GENERIC_SUPPORT_INTENTS_EN[:3]
 
-If clarification is needed:
-1. Write one short natural follow-up question.
-2. Provide 2 to 4 short candidate directions the user can choose from.
 
-# Output Format
-Return strict JSON:
-{
-  "need_clarification": bool,
-  "reason": str,
-  "clarifying_question": str,
-  "candidate_intents": list[str]
-}
+def _build_clarifying_question(
+    query: str,
+    language: Literal["chinese", "english"],
+    missing_slots: list[str],
+) -> str:
+    if language == "chinese":
+        if "task_type" in missing_slots:
+            return "你想咨询的是哪一类问题？我先帮你把方向收窄一下。"
+        if "error_symptom" in missing_slots:
+            return "可以补充一下具体出现了什么现象或报错吗？"
+        return "可以再补充一下是哪个产品、页面或功能，以及你当前遇到的现象吗？"
 
-# User Query
-{{query}}
-"""
+    if "task_type" in missing_slots:
+        return "Which kind of issue are you dealing with? I can narrow it down first."
+    if "error_symptom" in missing_slots:
+        return "Could you share the exact symptom or error you are seeing?"
+    return "Could you tell me which product, page, or feature you mean and what exactly is happening?"
 
 
 def _fallback_result(language: Literal["chinese", "english"]) -> ClarificationResult:
-    if language == "chinese":
-        return {
-            "need_clarification": True,
-            "reason": "用户问题过于模糊，缺少产品、页面或报错现象等关键信息。",
-            "clarifying_question": "可以再补充一下具体是哪个产品、页面或功能，以及你当前遇到的现象吗？",
-            "candidate_intents": [
-                "具体是哪个产品或型号",
-                "你想完成什么操作",
-                "出现了什么报错或异常现象",
-            ],
-        }
+    candidate_intents = (
+        GENERIC_SUPPORT_INTENTS_ZH[:3]
+        if language == "chinese"
+        else GENERIC_SUPPORT_INTENTS_EN[:3]
+    )
+    question = (
+        "可以再补充一下是哪个产品、页面或功能，以及你当前遇到的现象吗？"
+        if language == "chinese"
+        else "Could you share which product, page, or feature you mean and what you are seeing?"
+    )
+    reason = (
+        "用户问题较模糊，缺少产品对象、任务类型或具体现象。"
+        if language == "chinese"
+        else "The question is still too vague and lacks the target, task type, or symptom."
+    )
     return {
         "need_clarification": True,
-        "reason": "The question is still too vague and lacks the product, page, or error details.",
-        "clarifying_question": "Could you share which product, page, or feature you mean, and what exactly is happening?",
-        "candidate_intents": [
-            "Which product or model",
-            "What action you want to complete",
-            "What error or abnormal behavior you saw",
-        ],
+        "reason": reason,
+        "clarifying_question": question,
+        "candidate_intents": candidate_intents,
+        "missing_slots": ["product_or_target", "task_type", "error_symptom"],
+        "trigger_signals": ["fallback"],
     }
 
 
 async def clarify_query(query: str) -> ClarificationResult:
-    language = _detect_language_with_fallback(query)
-    if not _has_vague_signal(query, language):
+    language = detect_language_with_fallback(query)
+    missing_slots = _infer_missing_slots(query, language)
+    if len(missing_slots) == 0 and len(query.strip()) >= 12:
         return {
             "need_clarification": False,
             "reason": "",
             "clarifying_question": "",
             "candidate_intents": [],
+            "missing_slots": [],
+            "trigger_signals": [],
         }
 
-    prompt = PromptTemplate.from_template(
-        _get_clarifier_prompt(language), template_format="mustache"
-    )
-    chain = prompt | clarifier_model | JsonOutputParser()
-
-    try:
-        result = await chain.with_retry(stop_after_attempt=3).ainvoke({"query": query})
-    except Exception:
-        return _fallback_result(language)
-
-    need_clarification = bool(result.get("need_clarification"))
-    if not need_clarification:
+    vague_signal = _has_vague_signal(query, language)
+    if not vague_signal and len(missing_slots) <= 1 and len(query.strip()) >= 12:
         return {
             "need_clarification": False,
-            "reason": str(result.get("reason", "")),
+            "reason": "",
             "clarifying_question": "",
             "candidate_intents": [],
+            "missing_slots": [],
+            "trigger_signals": [],
         }
 
-    clarifying_question = str(result.get("clarifying_question", "")).strip()
-    candidate_intents = [
-        str(item).strip()
-        for item in result.get("candidate_intents", [])
-        if str(item).strip()
-    ][:4]
+    if not vague_signal:
+        return {
+            "need_clarification": False,
+            "reason": "",
+            "clarifying_question": "",
+            "candidate_intents": [],
+            "missing_slots": [],
+            "trigger_signals": [],
+        }
 
-    if not clarifying_question:
+    candidate_intents = _build_candidate_intents(query, language)
+    clarifying_question = _build_clarifying_question(query, language, missing_slots)
+
+    if not clarifying_question or not candidate_intents:
         return _fallback_result(language)
 
     return {
         "need_clarification": True,
-        "reason": str(result.get("reason", "")).strip(),
+        "reason": (
+            "用户问题仍然偏模糊，直接检索和回答的命中范围过大。"
+            if language == "chinese"
+            else "The question is still vague enough that retrieval would be too broad."
+        ),
         "clarifying_question": clarifying_question,
         "candidate_intents": candidate_intents,
+        "missing_slots": missing_slots,
+        "trigger_signals": ["vague_pattern", "missing_slots"],
     }
 
 
@@ -199,14 +373,14 @@ def format_clarification_message(result: ClarificationResult) -> str:
 
     answer = result["clarifying_question"]
     if result["candidate_intents"]:
-        language = language_detect(answer)
+        language = detect_language_with_fallback(answer)
         intro = (
-            "你可以补充这些信息中的任意一项："
+            "你可以直接点击一个方向，或者补充更具体的说明："
             if language == "chinese"
-            else "You can add any of the following details:"
+            else "You can pick one direction below or add more details:"
         )
         options = "\n".join(
-            f"{index}. {item}"
+            f"{index}. {item['label']}"
             for index, item in enumerate(result["candidate_intents"], start=1)
         )
         answer += f"\n\n{intro}\n{options}"

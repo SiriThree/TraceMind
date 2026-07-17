@@ -5,12 +5,10 @@ from typing import Literal
 from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
-from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 
-# from llm_judge_result import judge_result_by_llm, refine_answer
 from tracemind.config import get_config
 from tracemind.model_factory import create_chat_model
-from tracemind.retriever import retriever
+from tracemind.retriever import retriever, summarize_retrieval
 from tracemind.utils import (
     convert_answer_to_ret,
     get_image_name,
@@ -32,70 +30,191 @@ refine_answer_llm = create_chat_model(
 )
 
 
+class ProductClarificationNeeded(Exception):
+    def __init__(
+        self,
+        *,
+        reason: str,
+        clarifying_question: str,
+        candidate_intents: list[dict],
+        missing_slots: list[str],
+        trigger_signals: list[str] | None = None,
+    ) -> None:
+        super().__init__(reason)
+        self.payload = {
+            "need_clarification": True,
+            "reason": reason,
+            "clarifying_question": clarifying_question,
+            "candidate_intents": candidate_intents,
+            "missing_slots": missing_slots,
+            "trigger_signals": trigger_signals or ["low_retrieval_confidence"],
+        }
+
+
 def ensure_answer_language(
-    answer: str, image_names: list[str], query_language: Literal["chinese", "english"]
+    answer: str,
+    image_names: list[str],
+    query_language: Literal["chinese", "english"],
 ) -> bool:
-    """
-    确保answer的语言和query_language的语言一致
-    """
+    del image_names
     answer_language = language_detect(answer)
     if answer_language != query_language:
-        raise Exception(f"模型回答的的语言不是{query_language}")
+        raise Exception(f"model output language is not {query_language}")
     return True
+
+
+async def _rewrite_answer_language(
+    *,
+    answer: str,
+    query_language: Literal["chinese", "english"],
+) -> tuple[str, list[str]]:
+    llm = create_chat_model("REFINE_LLM")
+    target_language = "Chinese" if query_language == "chinese" else "English"
+    prompt_template = """Rewrite the support answer into {target_language}. Keep the same meaning, step order, and any <pic image_name="..."></pic> tags. Do not add new facts.
+
+Output format:
+<answer>
+</answer>
+
+Original answer:
+{answer}
+"""
+    prompt = PromptTemplate.from_template(prompt_template)
+    chain = prompt | llm | StrOutputParser() | parse_answer
+    rewritten_answer, image_names = await chain.ainvoke(
+        {"answer": answer, "target_language": target_language}
+    )
+    ensure_answer_language(rewritten_answer, image_names, query_language)
+    return rewritten_answer, image_names
 
 
 def llm_can_answer_the_question(answer: str) -> bool:
-    """
-    检查LLM是否能够回答用户的问题,如果不能回答，则可能是source的预测有问题，之后重新不使用source进行检索生成
-    """
-    if "我不能回答这个问题" in answer or "I cannot answer the question" in answer:
-        return False
-    return True
+    lowered = answer.lower()
+    negative_patterns = [
+        "我不能回答这个问题",
+        "我无法回答这个问题",
+        "还不能准确回答",
+        "需要更多信息",
+        "i cannot answer the question",
+        "i cannot answer this question",
+        "cannot answer the question",
+        "cannot answer this question",
+        "cannot answer further",
+        "need more information",
+        "unable to determine",
+    ]
+    return not any(pattern in lowered or pattern in answer for pattern in negative_patterns)
 
 
-async def get_context(x: dict) -> str:
-    results = await retriever(
-        x["query"],
-        x["query_cls"],
-        x["top_k"],
-        x["use_source"],
-    )
-    logger.info(
-        "product:get_context query=%r use_source=%s chunks=%s",
-        x["query"],
-        x["use_source"],
-        len(results),
-    )
+def _results_to_context(results: list) -> str:
     return "\n\n".join([result.page_content for result in results])
 
 
+def _has_product_target_marker(query: str) -> bool:
+    lowered = query.lower()
+    return (
+        "product target:" in lowered
+        or "产品对象：" in query
+        or "产品对象:" in query
+    )
+
+
+def _should_clarify_before_answer(
+    query: str,
+    query_cls: dict,
+    retrieval_summary: dict,
+) -> bool:
+    if query_cls.get("source") is not None:
+        return False
+    if _has_product_target_marker(query):
+        return False
+
+    top_source_hits = (
+        retrieval_summary["top_sources"][0][1]
+        if retrieval_summary["top_sources"]
+        else 0
+    )
+    source_concentration = top_source_hits / max(retrieval_summary["hits"], 1)
+    return retrieval_summary["unique_sources"] >= 3 and source_concentration < 0.35
+
+
+def _low_confidence_clarification_payload(
+    language: Literal["chinese", "english"],
+) -> ProductClarificationNeeded:
+    if language == "chinese":
+        return ProductClarificationNeeded(
+            reason="当前检索结果来源比较分散，系统还无法稳定定位到同一个产品或场景。",
+            clarifying_question="为了更准确定位答案，可以再补充一下是哪个产品或型号，以及你现在遇到的具体现象吗？",
+            candidate_intents=[
+                {
+                    "id": "clarify_product_name",
+                    "label": "补充产品或型号",
+                    "slot_key": "product_name",
+                    "slot_value": "",
+                },
+                {
+                    "id": "clarify_page_or_feature",
+                    "label": "补充页面或功能",
+                    "slot_key": "feature_name",
+                    "slot_value": "",
+                },
+                {
+                    "id": "clarify_error_symptom",
+                    "label": "补充报错或现象",
+                    "slot_key": "error_symptom",
+                    "slot_value": "",
+                },
+            ],
+            missing_slots=["product_or_target", "error_symptom"],
+        )
+    return ProductClarificationNeeded(
+        reason="The retrieval results are still too scattered to reliably lock onto one product or scenario.",
+        clarifying_question="To narrow this down, could you share the product or model and the exact symptom you are seeing?",
+        candidate_intents=[
+            {
+                "id": "clarify_product_name",
+                "label": "Product or model",
+                "slot_key": "product_name",
+                "slot_value": "",
+            },
+            {
+                "id": "clarify_page_or_feature",
+                "label": "Page or feature",
+                "slot_key": "feature_name",
+                "slot_value": "",
+            },
+            {
+                "id": "clarify_error_symptom",
+                "label": "Exact symptom",
+                "slot_key": "error_symptom",
+                "slot_value": "",
+            },
+        ],
+        missing_slots=["product_or_target", "error_symptom"],
+    )
+
+
 async def refine_answer_direct(query: str, origin_ret: str, context: str) -> str:
-    """
-    使用LLM对上一步生成的答案进行优化
-    """
-    refine_answer_prompt_template = """你是一个客服专家，你需要根据用户的问题和所给上下文对这段客服回答进行优化。
-# 任务
-我会给你用户的问题，客服对该问题的回答（包含图片）、上下文信息，你需要根据原来的回答、回答中的图片以及上下文信息优化该回答，你需要在保证原来回答的基本内容不变的前提下，对回答进行优化，使得优化后的回答结构严谨连贯，图片与文本完美互补，你优化之后的回答是最终回答用户的答案。
+    refine_answer_prompt_template = """You are polishing a support reply using the user's question and the retrieved context.
 
-# 你优化的标准
-你需要保证回答详细、有深度；结构严谨连贯，图片与文本完美互补，显著提升理解效果。
+Task:
+1. Keep the answer faithful to the existing answer and context.
+2. Preserve <pic image_name="..."></pic> tags.
+3. Keep the response concise, readable, and professional.
+4. Do not add unsupported facts.
 
-# TIPS
-图中的<PIC>表示这个位置该放置图片，图片放置的顺序和输入的图片顺序一致
-
-# 约束
-你的回答中不要提及说明书等词语，你的回答需要符合正常客服的回答习惯等。
-
-# 输出格式
-你需要以json的格式输出优化后的答案，格式需和input_answer的结构一致，使用<answer>将答案内容包裹起来，需要插入图片的地方你需要使用PIC标签来表示图片，image_name的属性是图片名。例如：<pic image_name="Manual16_01"></pic>
-{   
-    "refined_answer": str,  #优化后的答案
+Output JSON:
+{
+  "refined_answer": str
 }
-# 用户问题
+
+User question:
 {{query}}
-# 客服回答
+
+Current answer:
 {{answer}}
-# 上下文信息
+
+Context:
 {{context}}
 """
     data = origin_ret.split(",[")
@@ -109,17 +228,7 @@ async def refine_answer_direct(query: str, origin_ret: str, context: str) -> str
         get_image_name(os.path.join(IMAGE_ROOT_DIR, image))
         for image in origin_image_list
     ]
-    messages = [
-        {
-            "role": "human",
-            "content": [
-                {
-                    "type": "text",
-                    "text": refine_answer_prompt_template,
-                },
-            ],
-        }
-    ]
+    messages = [{"role": "human", "content": [{"type": "text", "text": refine_answer_prompt_template}]}]
     prompt = ChatPromptTemplate.from_messages(messages, template_format="mustache")
     chain = prompt | refine_answer_llm | JsonOutputParser()
     result = await chain.with_retry().ainvoke(
@@ -134,7 +243,9 @@ async def refine_answer_direct(query: str, origin_ret: str, context: str) -> str
     try:
         ret = convert_answer_to_ret(result["refined_answer"])
     except Exception:
-        logger.exception("refine_answer_direct: failed to parse refined answer, fallback to original answer")
+        logger.exception(
+            "refine_answer_direct: failed to parse refined answer, fallback to original answer"
+        )
         return origin_ret
 
     new_data = ret.split(",[")
@@ -144,28 +255,120 @@ async def refine_answer_direct(query: str, origin_ret: str, context: str) -> str
         new_image_list = []
 
     new_image_list = [
-        get_image_name(os.path.join(IMAGE_ROOT_DIR, image)) for image in new_image_list
+        get_image_name(os.path.join(IMAGE_ROOT_DIR, image))
+        for image in new_image_list
     ]
 
-    # assert len(image_list) <= len(new_image_list), (
-    #     "优化后的图片数量要大于等于优化前的图片数量"
-    # )
     if len(image_list) != len(new_image_list):
-        print(
-            f"问题{query}存在图片数量不一致的情况，优化前的长度:{len(image_list)}，优化后的长度:{len(new_image_list)}"
+        logger.info(
+            "refine_answer_direct:image_count_changed before=%s after=%s query=%r",
+            len(image_list),
+            len(new_image_list),
+            query,
         )
-    # 大于的优化前的图片数量就直接返回，不对比
-    if len(image_list) == len(new_image_list):
-        for origin_image, new_image in zip(image_list, new_image_list):
-            if origin_image != new_image:
-                print(
-                    f"问题{query}存在图片不一致的情况，优化前的图片:{image_list}，优化后的图片:{new_image_list}"
-                )
-                # raise Exception(
-                #     f"优化前后的图片不一致，优化前的图片为{image_list}，优化后的图片为{new_image_list}"
-                # )
-
     return ret
+
+
+async def _generate_answer(
+    *,
+    query: str,
+    context: str,
+    query_language: Literal["chinese", "english"],
+) -> tuple[str, list[str]]:
+    llm = create_chat_model("PRODUCT_LLM")
+    generate_answer_prompt_template = """You are a support agent answering from retrieved manual context.
+
+Rules:
+1. Use context that directly supports the answer.
+2. If the context is not enough to answer, reply exactly:
+   - Chinese: 我不能回答这个问题
+   - English: I cannot answer the question
+3. Answer in the same language as the user.
+4. When useful, you may include <pic image_name="xxx"></pic>.
+
+Output format:
+<answer>
+</answer>
+
+User question:
+{{query}}
+
+Related context:
+<context>
+{{context}}
+</context>
+"""
+    generate_answer_prompt = PromptTemplate.from_template(
+        generate_answer_prompt_template,
+        template_format="mustache",
+    )
+    chain = generate_answer_prompt | llm | StrOutputParser() | parse_answer
+    answer, image_names = await chain.ainvoke({"query": query, "context": context})
+    try:
+        ensure_answer_language(answer, image_names, query_language)
+    except Exception:
+        answer, image_names = await _rewrite_answer_language(
+            answer=answer,
+            query_language=query_language,
+        )
+    return answer, image_names
+
+
+async def _generate_troubleshooting_answer(
+    *,
+    query: str,
+    context: str,
+    query_language: Literal["chinese", "english"],
+) -> tuple[str, list[str]]:
+    llm = create_chat_model("PRODUCT_LLM")
+    troubleshooting_prompt_template = """You are a product troubleshooting support agent. Use the provided manual context to give the user the most actionable troubleshooting help you can.
+
+Goals:
+1. If the user has already identified the product or model, do not fall back to "I cannot answer the question" unless the context is truly unrelated.
+2. Prefer concrete troubleshooting guidance drawn from the manual: startup checks, installation checks, safety interlocks, operating steps, reset actions, and when to contact support.
+3. If the context is only partially relevant, still give the best manual-grounded checks instead of asking the user to restate the same problem.
+4. The reply must stay in the user's language.
+5. If helpful images are mentioned in context, you may use <pic image_name="xxx"></pic>.
+
+Required answer structure when you can help:
+- One short opening sentence that acknowledges the issue.
+- One short "Quick check" line or an equivalent diagnosis direction.
+- 2 to 5 numbered troubleshooting steps.
+- One final line saying when to stop and contact after-sales or support if the issue still remains.
+
+Constraints:
+1. Do not invent facts outside the provided context.
+2. Do not ask the user to provide more details unless the context is truly insufficient to give even basic checks.
+3. If the context is truly unrelated, answer exactly:
+   - Chinese: 我不能回答这个问题
+   - English: I cannot answer the question
+
+Output format:
+<answer>
+</answer>
+
+User question:
+{{query}}
+
+Related context:
+<context>
+{{context}}
+</context>
+"""
+    prompt = PromptTemplate.from_template(
+        troubleshooting_prompt_template,
+        template_format="mustache",
+    )
+    chain = prompt | llm | StrOutputParser() | parse_answer
+    answer, image_names = await chain.ainvoke({"query": query, "context": context})
+    try:
+        ensure_answer_language(answer, image_names, query_language)
+    except Exception:
+        answer, image_names = await _rewrite_answer_language(
+            answer=answer,
+            query_language=query_language,
+        )
+    return answer, image_names
 
 
 async def answer_product_query(
@@ -175,7 +378,6 @@ async def answer_product_query(
     top_k: int,
     use_source: bool,
 ):
-    """处理产品类的问题，得到最终的答案"""
     logger.info(
         "product:start query=%r source=%s language=%s top_k=%s use_source=%s",
         query,
@@ -184,99 +386,109 @@ async def answer_product_query(
         top_k,
         use_source,
     )
-    llm = create_chat_model("PRODUCT_LLM")
-    generate_answer_prompt_template = """你是一个智能客服，你需要根据用户的问题，以及知识库中检索出的相关上下文来回答用户的问题，上下文内容中<picture-description></picture-description>中的内容是插图的内容，属性image_name是对应的图片名称。
-# 任务
-你需要以图文互补的形式来回答用户的问题，需要插入图片的地方你需要使用PIC标签来表示图片，image_name的属性是图片名。例如：<pic image_name="Manual16_01"></pic>
 
-# 要求
-1. 上下文可能会存在冗余，你的回答必须要简洁，针对用户的问题来进行回答，**不需要回答与用户问题无关的内容，也不需要对用户提问**
-2. 你的回答不必过于冗余，针对用户问题回答即可，结构严谨连贯，图片与文本完美互补，帮助用户更好地理解答案
-3. 图片必须和答案相关，能够解决用户的问题，并且有助于用户更好地理解答案
-4. 用户的问题是什么语言，你的答案也必须是什么语言
-5. 如果所给的上下文不能回答用户的问题，你需要回答“我不能回答这个问题”,如果用户的语言是英文，则回答“I cannot answer the question”
-6. 如果所给的上下文中有能够直接回答用户问题的内容，**你需要优先采用上下文中的原本的内容来回答，不要使用markdown的加粗的语法,不需要加粗，文字、图片顺序、图片名称需要和原文保持一致**
-7. 如果用户的问题中有明显的语法错误、逻辑错误的内容，你在回答的时候应该先指出来，再回答问题
+    del thread_id
 
-# 输出格式
-你必须使用answer标签来包裹你的答案，如下:
-<answer>
-</answer>
-# 用户的问题为
-{{query}}
-
-# 相关的上下文为
-<context>
-{{context}}
-</context>
-"""
-    generate_answer_prompt = PromptTemplate.from_template(
-        generate_answer_prompt_template, template_format="mustache"
+    first_results = await retriever(
+        query.strip('"'),
+        query_cls,
+        top_k,
+        use_source,
+        stage="primary",
     )
+    first_summary = summarize_retrieval(first_results)
+    logger.info("product:retrieval_summary_first %s", first_summary)
+    if _should_clarify_before_answer(query, query_cls, first_summary):
+        raise _low_confidence_clarification_payload(query_cls["language"])
 
-    product_answer_chain = (
-        RunnablePassthrough.assign(context=RunnableLambda(get_context))
-        | RunnablePassthrough.assign(
-            parsed_answer=(
-                generate_answer_prompt
-                | llm
-                | StrOutputParser()
-                | RunnableLambda(parse_answer)
-            )
-        )
-        | RunnablePassthrough.assign(
-            is_correct_language=lambda x: ensure_answer_language(
-                x["parsed_answer"][0],
-                x["parsed_answer"][1],
-                x["query_cls"]["language"],
-            )
-        )
+    context = _results_to_context(first_results)
+    logger.info(
+        "product:get_context query=%r use_source=%s chunks=%s",
+        query,
+        use_source,
+        len(first_results),
     )
-    # 第一次回答
-    res = await product_answer_chain.ainvoke(
-        {
-            "query": query.strip('"'),
-            "query_cls": query_cls,
-            "top_k": top_k,
-            "use_source": use_source,
-        }
+    answer, image_names = await _generate_answer(
+        query=query.strip('"'),
+        context=context,
+        query_language=query_cls["language"],
     )
-    answer = res["parsed_answer"][0]
-    image_names = res["parsed_answer"][1]
-    context = res["context"]
     logger.info(
         "product:first_pass answer_preview=%r images=%s context_chars=%s",
         answer[:160],
         len(image_names),
         len(context),
     )
-    # 如果查询分类错误可能会导致检索的上下文不相关，导致模型回答不了
+
     if not llm_can_answer_the_question(answer):
-        logger.info(f"first answer: {query} -> {answer}")
+        logger.info("first answer: %s -> %s", query, answer)
         logger.info("product:fallback retry_without_source=True")
-        # 不使用查询分类预测的 source 重新检索，并基于新上下文重新生成答案
-        res = await product_answer_chain.ainvoke(
-            {
-                "query": query.strip('"'),
-                "query_cls": query_cls,
-                "top_k": top_k,
-                "use_source": False,
-            }
+        if query_cls.get("_retrieval_debug"):
+            query_cls["_retrieval_debug"][-1]["fallback_triggered"] = True
+        if query_cls.get("source") is not None:
+            try:
+                answer, image_names = await _generate_troubleshooting_answer(
+                    query=query.strip('"'),
+                    context=context,
+                    query_language=query_cls["language"],
+                )
+                logger.info(
+                    "product:troubleshooting_pass answer_preview=%r images=%s context_chars=%s",
+                    answer[:160],
+                    len(image_names),
+                    len(context),
+                )
+                if llm_can_answer_the_question(answer):
+                    origin_ret = answer
+                    if image_names:
+                        origin_ret += "," + str(image_names)
+                    new_ret = await refine_answer_direct(query, origin_ret, context)
+                    logger.info("product:final answer_preview=%r", new_ret[:200])
+                    return new_ret
+            except Exception:
+                logger.exception("product:troubleshooting_pass_failed")
+
+        second_results = await retriever(
+            query.strip('"'),
+            query_cls,
+            top_k,
+            False,
+            stage="fallback_no_source",
         )
-        answer = res["parsed_answer"][0]
-        image_names = res["parsed_answer"][1]
-        context = res["context"]
+        context = _results_to_context(second_results)
+        logger.info(
+            "product:get_context query=%r use_source=%s chunks=%s",
+            query,
+            False,
+            len(second_results),
+        )
+        answer, image_names = await _generate_answer(
+            query=query.strip('"'),
+            context=context,
+            query_language=query_cls["language"],
+        )
         logger.info(
             "product:second_pass answer_preview=%r images=%s context_chars=%s",
             answer[:160],
             len(image_names),
             len(context),
         )
+        retrieval_summary = summarize_retrieval(second_results)
+        logger.info("product:retrieval_summary %s", retrieval_summary)
+        top_source_hits = (
+            retrieval_summary["top_sources"][0][1]
+            if retrieval_summary["top_sources"]
+            else 0
+        )
+        source_concentration = top_source_hits / max(retrieval_summary["hits"], 1)
+        if not llm_can_answer_the_question(answer) and (
+            retrieval_summary["unique_sources"] >= 3 or source_concentration < 0.75
+        ):
+            raise _low_confidence_clarification_payload(query_cls["language"])
 
     origin_ret = answer
-    if image_names and len(image_names) > 0:
+    if image_names:
         origin_ret += "," + str(image_names)
-    # 优化生成的答案
     new_ret = await refine_answer_direct(query, origin_ret, context)
     logger.info("product:final answer_preview=%r", new_ret[:200])
     return new_ret

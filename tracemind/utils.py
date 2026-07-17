@@ -68,6 +68,31 @@ def language_detect(text: str) -> Literal["chinese", "english"]:
     return cast(Literal["chinese", "english"], language.name.lower())
 
 
+def sanitize_answer_text(text: str) -> str:
+    cleaned = text.replace("\u00a0", " ").replace("\u200b", "")
+    cleaned = cleaned.replace("\r\n", "\n").replace("\r", "\n")
+
+    mojibake_replacements = {
+        "�C": " - ",
+        "��": "'",
+        "“": '"',
+        "”": '"',
+        "‘": "'",
+        "’": "'",
+        "–": "-",
+        "—": "-",
+        "…": "...",
+    }
+    for old, new in mojibake_replacements.items():
+        cleaned = cleaned.replace(old, new)
+
+    cleaned = cleaned.replace("�", "")
+    cleaned = re.sub(r"[ \t]+", " ", cleaned)
+    cleaned = re.sub(r" *\n *", "\n", cleaned)
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+    return cleaned.strip()
+
+
 def parse_answer(answer: str) -> tuple[str, list[str]]:
     """
     Parse LLM output into plain content and image placeholders.
@@ -87,6 +112,7 @@ def parse_answer(answer: str) -> tuple[str, list[str]]:
         content = content.replace(str(pic), "<PIC>")
 
     content = re.sub(r"</?answer>", "", content, flags=re.IGNORECASE).strip()
+    content = sanitize_answer_text(content)
 
     pic_count = content.count("<PIC>")
     if pic_count != len(image_names):

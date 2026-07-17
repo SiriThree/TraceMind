@@ -3,7 +3,7 @@ import hmac
 import time
 import uuid
 from pathlib import Path
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 import uvicorn
 from fastapi import FastAPI, Header, HTTPException, status
@@ -35,24 +35,35 @@ SUPPORTED_MIME_TYPES = [
 KEFU_API_TOKEN = "kf_test"
 
 
-class ChatRequestBody(BaseModel):
-    question: str = Field(
-        ...,
-        min_length=1,
-        description="用户问题",
-        examples=[
-            "使用吹风机时，人员需要佩戴哪些防护装备？",
-            "这个页面一直报错，帮我看看",
-        ],
+class ClarificationPayload(BaseModel):
+    is_followup: bool = Field(default=False, description="是否为澄清补充轮")
+    selected_intent_id: str | None = Field(
+        default=None,
+        description="用户点击的候选意图 ID",
     )
+
+
+class CandidateIntentModel(BaseModel):
+    id: str
+    label: str
+    slot_key: str
+    slot_value: str
+
+
+class ChatRequestBody(BaseModel):
+    question: str = Field(default="", description="用户问题或澄清补充")
     session_id: Optional[str] = Field(default=None, description="会话 ID")
-    images: List[str] = Field(
+    images: list[str] = Field(
         default=[],
         min_length=0,
         max_length=3,
         description="Base64 图片列表",
     )
     stream: bool = Field(default=False, description="是否使用流式响应")
+    clarification: ClarificationPayload | None = Field(
+        default=None,
+        description="澄清补充信息",
+    )
 
 
 class ChatResponseData(BaseModel):
@@ -63,9 +74,25 @@ class ChatResponseData(BaseModel):
         default="answer",
         description="answer 表示直接回答，clarification 表示需要补充信息",
     )
-    candidate_intents: List[str] = Field(
-        default=[],
-        description="当需要澄清时，返回给用户的候选补充方向",
+    clarification_state: Literal["none", "pending", "resolved"] = Field(
+        default="none",
+        description="当前澄清状态",
+    )
+    candidate_intents: list[CandidateIntentModel] = Field(
+        default_factory=list,
+        description="候选补充方向",
+    )
+    missing_slots: list[str] = Field(
+        default_factory=list,
+        description="当前仍缺失的信息槽位",
+    )
+    effective_query: str = Field(
+        default="",
+        description="本轮最终送入主链路的查询文本",
+    )
+    session_debug: dict = Field(
+        default_factory=dict,
+        description="当前会话状态调试信息",
     )
 
 
@@ -82,8 +109,7 @@ def validate_base64_image(base64_image: str) -> None:
             image_mime_type = header.split(";")[0].split(":")[1]
             if ";base64" not in header:
                 raise ValueError("Invalid data URL format")
-
-            if not any(mime == image_mime_type for mime in SUPPORTED_MIME_TYPES):
+            if image_mime_type not in SUPPORTED_MIME_TYPES:
                 raise ValueError("Unsupported image MIME type")
         except ValueError as e:
             raise HTTPException(
@@ -148,7 +174,7 @@ async def chat(
     authorization: str = Header(
         alias="Authorization",
         description="Bearer token",
-        example="Bearer kf_test",
+        examples=["Bearer kf_test"],
     ),
     x_request_id: Optional[str] = Header(
         default=None,
@@ -159,30 +185,47 @@ async def chat(
         default=None,
         alias="X-Client-Type",
         description="调用终端类型",
-        example="app",
+        examples=["app"],
     ),
 ) -> ChatResponse | StreamingResponse:
     verify_bearer_token(authorization)
     if x_client_type is not None:
         verify_x_client_type(x_client_type)
-
     del x_request_id
 
-    question = body.question
     session_id = body.session_id or f"kf_{str(uuid.uuid4())}"
-    images = body.images
-    is_stream = body.stream
+    question = body.question.strip()
 
-    for base64_image in images:
+    if not question and not (
+        body.clarification and body.clarification.is_followup and body.clarification.selected_intent_id
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="question cannot be empty unless a clarification choice is selected",
+        )
+
+    for base64_image in body.images:
         validate_base64_image(base64_image)
 
-    if is_stream:
+    clarification_payload = (
+        body.clarification.model_dump() if body.clarification is not None else None
+    )
+
+    if body.stream:
         return StreamingResponse(
-            pipeline_stream(question, thread_id=session_id),
+            pipeline_stream(
+                question,
+                thread_id=session_id,
+                clarification=clarification_payload,
+            ),
             media_type="text/event-stream",
         )
 
-    result = await pipeline_result(question, thread_id=session_id)
+    result = await pipeline_result(
+        question,
+        thread_id=session_id,
+        clarification=clarification_payload,
+    )
     timestamp = str(int(time.time()))
     return ChatResponse(
         code=0,
@@ -192,7 +235,13 @@ async def chat(
             session_id=session_id,
             timestamp=timestamp,
             response_type=result["response_type"],
-            candidate_intents=result["candidate_intents"],
+            clarification_state=result["clarification_state"],
+            candidate_intents=[
+                CandidateIntentModel(**item) for item in result["candidate_intents"]
+            ],
+            missing_slots=result["missing_slots"],
+            effective_query=result["effective_query"],
+            session_debug=result["session_debug"],
         ),
     )
 

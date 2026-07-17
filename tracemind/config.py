@@ -66,6 +66,7 @@ def get_config() -> dict:
 
     return {
         "USE_QUERY_CLS": os.getenv("USE_QUERY_CLS") == "1",
+        "ENABLE_LIGHTWEIGHT_RERANK": os.getenv("ENABLE_LIGHTWEIGHT_RERANK", "1") != "0",
         "USE_CONTEXTUAL_AUGMENTATION": use_contextual_augmentation,
         "IMAGE_DESCRIPTION_RESULTS_JSON_FILE": image_description_results_json_file,
         "DATA_ROOT_DIR": data_root_dir,

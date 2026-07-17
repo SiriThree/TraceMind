@@ -7,50 +7,172 @@
     <style>
       :root {
         font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-        color-scheme: light;
         --bg: #f5f7fb;
         --panel: #ffffff;
         --line: #d9e0ea;
         --text: #1f2937;
         --subtle: #6b7280;
         --accent: #2563eb;
+        --accent-soft: #eff6ff;
+        --signal: #eef2ff;
       }
       * { box-sizing: border-box; }
       body { margin: 0; background: var(--bg); color: var(--text); }
-      .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 48px; }
+      input, textarea, button { font: inherit; }
+      .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 20px 48px; }
       .head { margin-bottom: 20px; }
-      h1 { margin: 0 0 6px; font-size: 28px; }
+      .head h1 { margin: 0 0 8px; font-size: 28px; }
       .sub { color: var(--subtle); font-size: 14px; }
-      .grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 16px; }
-      .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+      .grid { display: grid; grid-template-columns: minmax(280px, 320px) minmax(0, 1fr); gap: 16px; }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+      }
       .panel h2 { margin: 0 0 12px; font-size: 16px; }
       .field { margin-bottom: 14px; }
-      .field label { display: block; font-size: 13px; margin-bottom: 6px; color: var(--subtle); }
+      .field label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        color: var(--subtle);
+      }
       .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      input, textarea, button { font: inherit; }
-      input, textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: #fff; color: var(--text); }
+      .request-panel .row { grid-template-columns: 1fr; }
+      input, textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+        background: #fff;
+        color: var(--text);
+      }
       textarea { min-height: 180px; resize: vertical; }
-      .toolbar, .chips { display: flex; gap: 10px; flex-wrap: wrap; }
-      button { border: 1px solid var(--line); border-radius: 8px; padding: 9px 14px; background: #fff; cursor: pointer; }
-      .primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-      .chip { border-radius: 999px; padding: 7px 12px; font-size: 13px; }
-      .meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
-      .meta-item, .answer-box, pre { border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; padding: 12px; }
-      .meta-key { font-size: 12px; color: var(--subtle); margin-bottom: 4px; }
-      .answer-box { white-space: pre-wrap; min-height: 160px; }
-      pre { margin: 0; min-height: 220px; overflow: auto; font-size: 12px; }
-      .status { margin-top: 10px; color: var(--subtle); font-size: 13px; }
-      @media (max-width: 900px) { .grid, .row, .meta { grid-template-columns: 1fr; } }
+      .request-panel textarea { min-height: 220px; }
+      button {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 9px 14px;
+        background: #fff;
+        cursor: pointer;
+      }
+      button:disabled { cursor: not-allowed; opacity: 0.7; }
+      .primary {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      .toolbar, .chips, .intent-list, .signal-list {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .request-panel .toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      .request-panel .toolbar button {
+        width: 100%;
+      }
+      .chip, .intent-btn {
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 13px;
+      }
+      .chip { background: #fff; }
+      .intent-btn {
+        background: var(--accent-soft);
+        border-color: #bfdbfe;
+        color: #1d4ed8;
+      }
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .meta-item,
+      .answer-box,
+      .intent-box,
+      .debug-box,
+      .slot-item,
+      pre {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfe;
+        padding: 12px;
+      }
+      .meta-key {
+        font-size: 12px;
+        color: var(--subtle);
+        margin-bottom: 4px;
+      }
+      .answer-box { white-space: pre-wrap; min-height: 180px; }
+      .intent-box { min-height: 84px; }
+      .debug-box {
+        white-space: pre-wrap;
+        min-height: 96px;
+        font-size: 12px;
+        overflow: auto;
+      }
+      .debug-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .slot-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .slot-item { background: #fff; padding: 10px; }
+      .slot-name {
+        font-size: 12px;
+        color: var(--subtle);
+        margin-bottom: 4px;
+      }
+      .slot-value { white-space: pre-wrap; font-size: 13px; }
+      .signal-chip {
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: var(--signal);
+        color: #3730a3;
+        font-size: 12px;
+        border: 1px solid #c7d2fe;
+      }
+      .hint {
+        margin-top: 8px;
+        color: var(--subtle);
+        font-size: 12px;
+      }
+      pre {
+        margin: 0;
+        min-height: 220px;
+        overflow: auto;
+        font-size: 12px;
+      }
+      .status {
+        margin-top: 10px;
+        color: var(--subtle);
+        font-size: 13px;
+      }
+      @media (max-width: 960px) {
+        .grid, .row, .meta, .debug-grid { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
       <div class="head">
         <h1>TraceMind Playground</h1>
-        <div class="sub">直接观察澄清分支、正常回答分支和原始 JSON 返回。</div>
+        <div class="sub">
+          这个测试页用来观察多轮澄清、候选意图、增强查询、槽位状态和最终回答之间的关系。
+        </div>
       </div>
+
       <div class="grid">
-        <section class="panel">
+        <section class="panel request-panel">
           <h2>请求</h2>
           <div class="row">
             <div class="field">
@@ -62,42 +184,111 @@
               <input id="token" value="kf_test" />
             </div>
           </div>
+
           <div class="field">
-            <label for="question">Question</label>
-            <textarea id="question">this page has an error</textarea>
+            <label for="question">Question / Follow-up</label>
+            <textarea id="question">这个功能不好用</textarea>
           </div>
+
           <div class="field">
             <label>Examples</label>
             <div class="chips">
-              <button class="chip" data-question="this page has an error">英文模糊问题</button>
-              <button class="chip" data-question="this feature is not working">英文功能异常</button>
-              <button class="chip" data-question="这个页面报错了">中文模糊问题</button>
+              <button class="chip" data-question="这个功能不好用">中文模糊问题</button>
+              <button class="chip" data-question="this feature is not working">英文模糊问题</button>
               <button class="chip" data-question="使用吹风机时，人员需要佩戴哪些防护装备？">中文明确问题</button>
+              <button class="chip" data-question="Air Fryer will not start and there is no response after pressing the power switch">英文产品故障补充</button>
             </div>
           </div>
+
           <div class="toolbar">
             <button id="sendBtn" class="primary">Send</button>
-            <button id="clearBtn">Clear</button>
+            <button id="newSessionBtn">New Session</button>
+            <button id="clearBtn">Clear View</button>
             <button id="copyBtn">Copy JSON</button>
           </div>
+
           <div id="status" class="status">Ready.</div>
         </section>
-        <section class="panel">
+
+        <section class="panel response-panel">
           <h2>响应</h2>
+
           <div class="meta">
             <div class="meta-item">
               <div class="meta-key">response_type</div>
               <div id="responseType">-</div>
             </div>
             <div class="meta-item">
+              <div class="meta-key">clarification_state</div>
+              <div id="clarificationState">-</div>
+            </div>
+            <div class="meta-item">
               <div class="meta-key">session_id</div>
               <div id="sessionId">-</div>
             </div>
           </div>
+
           <div class="field">
             <label>Answer</label>
             <div id="answerBox" class="answer-box"></div>
           </div>
+
+          <div class="field">
+            <label>Candidate Intents</label>
+            <div class="intent-box">
+              <div id="intentList" class="intent-list"></div>
+              <div class="hint">
+                当返回 clarification 时，可以直接点候选意图，也可以先在左侧输入补充说明再发送。
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Effective Query</label>
+            <div id="effectiveQueryBox" class="debug-box"></div>
+          </div>
+
+          <div class="debug-grid">
+            <div class="field">
+              <label>Decision Reason</label>
+              <div id="reasonBox" class="debug-box"></div>
+            </div>
+            <div class="field">
+              <label>Missing Slots</label>
+              <div id="missingSlotsBox" class="debug-box"></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Trigger Signals</label>
+            <div class="intent-box">
+              <div id="signalList" class="signal-list"></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Resolved Slots</label>
+            <div class="intent-box">
+              <div id="slotList" class="slot-list"></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Session Debug</label>
+            <div id="sessionDebugBox" class="debug-box"></div>
+          </div>
+
+          <div class="debug-grid">
+            <div class="field">
+              <label>Route Debug</label>
+              <div id="routeDebugBox" class="debug-box"></div>
+            </div>
+            <div class="field">
+              <label>Retrieval Debug</label>
+              <div id="retrievalDebugBox" class="debug-box"></div>
+            </div>
+          </div>
+
           <div class="field">
             <label>Raw JSON</label>
             <pre id="rawJson"></pre>
@@ -105,20 +296,111 @@
         </section>
       </div>
     </div>
+
     <script>
       const baseUrlInput = document.getElementById("baseUrl");
       const tokenInput = document.getElementById("token");
       const questionInput = document.getElementById("question");
       const sendBtn = document.getElementById("sendBtn");
+      const newSessionBtn = document.getElementById("newSessionBtn");
       const clearBtn = document.getElementById("clearBtn");
       const copyBtn = document.getElementById("copyBtn");
       const statusEl = document.getElementById("status");
       const responseTypeEl = document.getElementById("responseType");
+      const clarificationStateEl = document.getElementById("clarificationState");
       const sessionIdEl = document.getElementById("sessionId");
       const answerBoxEl = document.getElementById("answerBox");
       const rawJsonEl = document.getElementById("rawJson");
+      const intentListEl = document.getElementById("intentList");
+      const effectiveQueryBoxEl = document.getElementById("effectiveQueryBox");
+      const sessionDebugBoxEl = document.getElementById("sessionDebugBox");
+      const routeDebugBoxEl = document.getElementById("routeDebugBox");
+      const retrievalDebugBoxEl = document.getElementById("retrievalDebugBox");
+      const reasonBoxEl = document.getElementById("reasonBox");
+      const signalListEl = document.getElementById("signalList");
+      const slotListEl = document.getElementById("slotList");
+      const missingSlotsBoxEl = document.getElementById("missingSlotsBox");
+
+      let currentSessionId = "";
+      let lastResponseType = "answer";
 
       baseUrlInput.value = window.location.origin;
+
+      function renderCandidateIntents(items) {
+        intentListEl.innerHTML = "";
+        (Array.isArray(items) ? items : []).forEach((item) => {
+          const button = document.createElement("button");
+          button.className = "intent-btn";
+          button.textContent = item.label;
+          button.addEventListener("click", () => sendRequest(item.id));
+          intentListEl.appendChild(button);
+        });
+      }
+
+      function renderSignals(items) {
+        signalListEl.innerHTML = "";
+        (Array.isArray(items) ? items : []).forEach((item) => {
+          const chip = document.createElement("div");
+          chip.className = "signal-chip";
+          chip.textContent = item;
+          signalListEl.appendChild(chip);
+        });
+      }
+
+      function renderSlots(slots) {
+        slotListEl.innerHTML = "";
+        const entries = Object.entries(slots || {});
+        if (!entries.length) {
+          slotListEl.innerHTML = '<div class="slot-item"><div class="slot-value">-</div></div>';
+          return;
+        }
+        entries.forEach(([key, value]) => {
+          const item = document.createElement("div");
+          item.className = "slot-item";
+          item.innerHTML = `<div class="slot-name">${key}</div><div class="slot-value">${value || "-"}</div>`;
+          slotListEl.appendChild(item);
+        });
+      }
+
+      function resetResponseView() {
+        responseTypeEl.textContent = "-";
+        clarificationStateEl.textContent = "-";
+        sessionIdEl.textContent = "-";
+        answerBoxEl.textContent = "";
+        effectiveQueryBoxEl.textContent = "";
+        reasonBoxEl.textContent = "";
+        missingSlotsBoxEl.textContent = "";
+        sessionDebugBoxEl.textContent = "";
+        routeDebugBoxEl.textContent = "";
+        retrievalDebugBoxEl.textContent = "";
+        rawJsonEl.textContent = "";
+        renderCandidateIntents([]);
+        renderSignals([]);
+        renderSlots({});
+      }
+
+      function prettyRouteDebug(debug) {
+        if (!debug) return "-";
+        const routeSummary = {
+          route_source: debug.route_source || null,
+          route_question_type: debug.route_question_type || null,
+          route_candidate_sources: debug.route_candidate_sources || [],
+          route_debug: debug.route_debug || {}
+        };
+        return JSON.stringify(routeSummary, null, 2);
+      }
+
+      function prettyRetrievalDebug(debug) {
+        const retrieval = Array.isArray(debug?.retrieval_debug) ? debug.retrieval_debug : [];
+        if (!retrieval.length) return "-";
+        return JSON.stringify(retrieval, null, 2);
+      }
+
+      function resetSessionState() {
+        currentSessionId = "";
+        lastResponseType = "answer";
+        resetResponseView();
+      }
 
       document.querySelectorAll(".chip").forEach((button) => {
         button.addEventListener("click", () => {
@@ -127,11 +409,14 @@
       });
 
       clearBtn.addEventListener("click", () => {
-        answerBoxEl.textContent = "";
-        rawJsonEl.textContent = "";
-        responseTypeEl.textContent = "-";
-        sessionIdEl.textContent = "-";
-        statusEl.textContent = "Cleared.";
+        resetResponseView();
+        statusEl.textContent = "View cleared.";
+      });
+
+      newSessionBtn.addEventListener("click", () => {
+        resetSessionState();
+        questionInput.value = "";
+        statusEl.textContent = "Started a new session.";
       });
 
       copyBtn.addEventListener("click", async () => {
@@ -140,16 +425,43 @@
         statusEl.textContent = "Raw JSON copied.";
       });
 
-      sendBtn.addEventListener("click", async () => {
+      async function sendRequest(selectedIntentId = null) {
         const baseUrl = baseUrlInput.value.trim().replace(/\/$/, "");
         const token = tokenInput.value.trim();
         const question = questionInput.value.trim();
-        if (!baseUrl || !question) {
-          statusEl.textContent = "Please fill base URL and question.";
+
+        if (!baseUrl) {
+          statusEl.textContent = "Please fill the base URL.";
           return;
         }
+
+        const isClarificationFollowup = Boolean(
+          currentSessionId && lastResponseType === "clarification"
+        );
+
+        if (!question && !(isClarificationFollowup && selectedIntentId)) {
+          statusEl.textContent = "Please type a question or click a clarification choice.";
+          return;
+        }
+
+        const payload = {
+          question,
+          session_id: currentSessionId || undefined,
+          stream: false
+        };
+
+        if (isClarificationFollowup) {
+          payload.clarification = {
+            is_followup: true,
+            selected_intent_id: selectedIntentId
+          };
+        }
+
         sendBtn.disabled = true;
-        statusEl.textContent = "Sending...";
+        statusEl.textContent = isClarificationFollowup
+          ? "Sending clarification follow-up..."
+          : "Sending...";
+
         try {
           const response = await fetch(`${baseUrl}/chat`, {
             method: "POST",
@@ -157,25 +469,49 @@
               "Content-Type": "application/json; charset=utf-8",
               "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ question, stream: false })
+            body: JSON.stringify(payload)
           });
-          const text = await response.text();
-          const data = JSON.parse(text);
+
+          const data = await response.json();
+          const debug = data?.data?.session_debug || {};
+
           rawJsonEl.textContent = JSON.stringify(data, null, 2);
           answerBoxEl.textContent = data?.data?.answer || "";
           responseTypeEl.textContent = data?.data?.response_type || "-";
+          clarificationStateEl.textContent = data?.data?.clarification_state || "-";
           sessionIdEl.textContent = data?.data?.session_id || "-";
-          statusEl.textContent = response.ok ? "Success." : `HTTP ${response.status}`;
+          effectiveQueryBoxEl.textContent = data?.data?.effective_query || "";
+          reasonBoxEl.textContent = debug.clarification_reason || "-";
+          missingSlotsBoxEl.textContent = JSON.stringify(data?.data?.missing_slots || [], null, 2);
+          sessionDebugBoxEl.textContent = JSON.stringify(debug, null, 2);
+          routeDebugBoxEl.textContent = prettyRouteDebug(debug);
+          retrievalDebugBoxEl.textContent = prettyRetrievalDebug(debug);
+
+          renderCandidateIntents(data?.data?.candidate_intents || []);
+          renderSignals(debug.trigger_signals || []);
+          renderSlots(debug.slots || {});
+
+          currentSessionId = data?.data?.session_id || currentSessionId;
+          lastResponseType = data?.data?.response_type || "answer";
+
+          if (lastResponseType === "clarification") {
+            statusEl.textContent = "Clarification needed. You can click a candidate intent or add more details.";
+            questionInput.value = "";
+            questionInput.placeholder = "补充产品、页面、报错现象，例如：吹风机启动不了，按下开关后没有反应";
+          } else {
+            statusEl.textContent = response.ok ? "Success." : `HTTP ${response.status}`;
+            questionInput.placeholder = "继续输入新的问题，或点击 New Session 开启新会话";
+          }
         } catch (error) {
           answerBoxEl.textContent = "";
           rawJsonEl.textContent = String(error);
-          responseTypeEl.textContent = "-";
-          sessionIdEl.textContent = "-";
           statusEl.textContent = "Request failed.";
         } finally {
           sendBtn.disabled = false;
         }
-      });
+      }
+
+      sendBtn.addEventListener("click", () => sendRequest(null));
     </script>
   </body>
 </html>
